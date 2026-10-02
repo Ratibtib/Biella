@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Biella · Piémont · 2–11 octobre 2026</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3ECE0; --card:#FFFCF6; --ink:#2A1F1A; --ink-soft:#6E5F54;
+    --wine:#7B1E2B; --wine-deep:#5C1420; --forest:#2F5D50; --ochre:#C8862A; --lake:#2E6F8E; --blue:#2b7fff;
+    --line:rgba(42,31,26,.15);
+    --shadow:0 1px 0 rgba(42,31,26,.05),0 10px 26px -20px rgba(42,31,26,.55);
+    --disp:"Fraunces",Georgia,"Times New Roman",serif;
+    --sans:"DM Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+  button,select,input,textarea{font-family:inherit}
+  button{-webkit-tap-highlight-color:transparent}
+  .wrap{max-width:1400px; margin:0 auto; padding:0 16px}
+
+  /* ---------- header : laine à chevrons + crête des Alpes ---------- */
+  header{position:relative; color:#F8EFE2; padding:20px 0 34px;
+    background:
+      repeating-linear-gradient(45deg, rgba(255,255,255,.04) 0 5px, transparent 5px 10px),
+      repeating-linear-gradient(-45deg, rgba(0,0,0,.07) 0 5px, transparent 5px 10px),
+      linear-gradient(160deg,var(--wine) 0%,var(--wine-deep) 100%)}
+  header .ridge{position:absolute; left:0; right:0; bottom:-1px; width:100%; height:30px; display:block}
+  .eyebrow{font-size:11.5px; letter-spacing:.2em; text-transform:uppercase; color:#E7C9A9; margin:0 0 4px; font-weight:700}
+  h1{font-family:var(--disp); font-weight:700; font-size:clamp(30px,6.4vw,58px); line-height:1; margin:0; letter-spacing:-.01em}
+  h1 em{font-style:italic; font-weight:500; color:#F2C879}
+  .subline{margin:10px 0 0; color:#EBD9C6; font-size:14px; max-width:70ch}
+  .who{display:flex; align-items:center; gap:8px; margin-top:14px; flex-wrap:wrap}
+  .who .lbl{font-size:11px; text-transform:uppercase; letter-spacing:.14em; color:#E7C9A9; font-weight:700}
+  .whoseg{display:inline-flex; background:rgba(0,0,0,.22); border:1px solid rgba(255,255,255,.18); border-radius:999px; padding:3px}
+  .whoseg button{border:0; background:transparent; color:#EBD9C6; font-weight:700; font-size:13px; padding:6px 14px; border-radius:999px; cursor:pointer; max-width:40vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .whoseg button[aria-pressed="true"]{background:#F8EFE2; color:var(--wine-deep)}
+  .ghost{border:1px solid rgba(255,255,255,.25); background:transparent; color:#F8EFE2; border-radius:999px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer}
+  .ghost.share{background:#25D366; border-color:#25D366; color:#06381B}
+  .spine{display:flex; gap:8px; margin-top:16px; overflow-x:auto; scrollbar-width:none; padding-bottom:2px}
+  .spine::-webkit-scrollbar{display:none}
+  .leg{flex:0 0 auto; display:flex; background:rgba(0,0,0,.2); border:1px solid rgba(255,255,255,.14); border-radius:10px; overflow:hidden}
+  .leg .d{font-family:var(--disp); font-size:19px; font-weight:700; padding:6px 10px; display:flex; align-items:center; background:rgba(242,200,121,.9); color:#3A2408; white-space:nowrap}
+  .leg .t{padding:6px 12px 6px 10px}
+  .leg .t .k{font-size:9.5px; letter-spacing:.14em; text-transform:uppercase; color:#E7C9A9; font-weight:700}
+  .leg .t .v{font-weight:700; font-size:13px; white-space:nowrap}
+
+  main{padding:14px 0 44px}
+  .savebar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px}
+  .save-status{font-size:12px; font-weight:700; color:var(--ink-soft)}
+  .save-status.err{color:var(--wine)}
+  .app{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:18px; align-items:start}
+  .panel{background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); overflow:hidden}
+  .col-head{display:flex; align-items:baseline; gap:10px; padding:12px 14px 10px; border-bottom:1px solid var(--line)}
+  .col-head h2{font-family:var(--disp); font-weight:700; font-size:22px; margin:0}
+  .col-head .cc{font-size:11px; font-weight:800; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.08em}
+  .col-head .cc b{color:var(--wine)}
+  .panel-body{padding:12px 14px 16px; max-height:calc(100vh - 120px); overflow:auto}
+
+  /* ---------- cartes Leaflet ---------- */
+  .mapwrap{margin:0 0 12px}
+  .mmbar{display:flex; align-items:center; gap:8px; margin:0 0 8px}
+  .mmtitle{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; font-weight:800; color:var(--ink-soft)}
+  .locbtn{margin-left:auto; border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:999px; padding:6px 10px; font-size:11.5px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px}
+  .locbtn .pin{color:var(--blue)}
+  .locbtn[aria-pressed="true"]{background:var(--blue); color:#fff; border-color:var(--blue)}
+  .locbtn[aria-pressed="true"] .pin{color:#fff}
+  .lmap[hidden],.locbtn[hidden],.maplegend[hidden]{display:none}
+  .lmap{height:300px; border-radius:12px; border:1px solid var(--line); z-index:1; background:#E6DFD2}
+  .mapmsg{margin-top:7px; font-size:11.5px; font-weight:600; color:var(--ink-soft); background:#fff; border:1px solid var(--line); border-left:3px solid var(--blue); border-radius:8px; padding:7px 10px}
+  .mapmsg.err{border-left-color:var(--wine); color:var(--wine)}
+  .maplegend{display:flex; gap:12px; flex-wrap:wrap; font-size:11.5px; color:var(--ink-soft); margin-top:8px}
+  .maplegend .k{display:inline-flex; align-items:center; gap:6px}
+  .maplegend .k i{width:11px; height:11px; border-radius:50%; display:inline-block; border:2px solid #fff; box-shadow:0 0 0 1px var(--line)}
+  .mk{width:15px; height:15px; border-radius:50%; border:2.5px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .mk.ev{border-radius:3px; transform:rotate(45deg)}
+  .mk.match{box-shadow:0 0 0 3px #F2C879,0 1px 5px rgba(0,0,0,.45)}
+  .mk.love{box-shadow:0 0 0 3px #E0364F,0 1px 5px rgba(0,0,0,.45)}
+  .mk.no{opacity:.35}
+  .mk.on{width:21px; height:21px}
+  .mk.base{width:24px; height:24px; border-radius:7px; background:var(--ink); display:grid; place-items:center; color:#fff; font-size:12px; border:2px solid #fff}
+  .me-dot{width:16px; height:16px; border-radius:50%; background:var(--blue); position:relative; border:3px solid #fff; box-shadow:0 0 0 2px rgba(43,127,255,.4),0 1px 4px rgba(0,0,0,.4)}
+  .me-dot::after{content:""; position:absolute; inset:-3px; border-radius:50%; box-shadow:0 0 0 2px rgba(43,127,255,.5); animation:pulse 1.8s ease-out infinite}
+  @keyframes pulse{0%{transform:scale(1);opacity:.9}100%{transform:scale(2.6);opacity:0}}
+  @media (prefers-reduced-motion:reduce){.me-dot::after{animation:none}}
+  .leaflet-popup-content{font-family:var(--sans); margin:11px 13px; min-width:170px}
+  .pop-name{font-weight:800; font-size:14px; margin-bottom:2px}
+  .pop-type{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); font-weight:700}
+  .pop-btn{margin-top:8px; border:0; background:var(--wine); color:#fff; font-weight:700; font-size:12px; padding:6px 11px; border-radius:8px; cursor:pointer}
+
+  /* ---------- filtres ---------- */
+  .filters{display:flex; flex-direction:column; gap:9px; margin:2px 0 12px}
+  .scroller{display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; padding-bottom:1px}
+  .scroller::-webkit-scrollbar{display:none}
+  .seg{display:inline-flex; background:#fff; border:1px solid var(--line); border-radius:999px; padding:3px; flex:0 0 auto}
+  .seg button{border:0; background:transparent; color:var(--ink-soft); font-weight:700; font-size:12.5px; padding:6px 11px; border-radius:999px; cursor:pointer; white-space:nowrap}
+  .seg button[aria-pressed="true"]{background:var(--ink); color:#fff}
+  .seg button .n{opacity:.7; font-weight:600}
+  .chip{flex:0 0 auto; border:1px solid var(--line); background:#fff; color:var(--ink-soft); border-radius:999px; padding:6px 11px; font-size:12px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:7px; white-space:nowrap}
+  .chip .dot{width:8px; height:8px; border-radius:50%}
+  .chip[aria-pressed="true"]{background:var(--ink); color:#fff; border-color:var(--ink)}
+  .frow{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  .counter{font-size:12.5px; color:var(--ink-soft); font-weight:700}
+  .counter b{color:var(--wine)}
+  .lnk{border:1px solid var(--line); background:transparent; color:var(--ink-soft); border-radius:8px; padding:6px 11px; font-size:12px; font-weight:700; cursor:pointer}
+  .lnk:hover{color:var(--wine); border-color:var(--wine)}
+
+  /* ---------- catalogue ---------- */
+  .cat{margin:14px 0 20px}
+  .cat > h3{font-family:var(--disp); font-weight:700; font-size:17px; margin:0 0 9px; padding-bottom:5px; border-bottom:2px solid var(--ink); display:flex; align-items:center; gap:9px}
+  .cat > h3 .dot{width:10px; height:10px; border-radius:50%}
+  .cat > h3 .n{font-size:11px; color:#fff; background:var(--ink); border-radius:6px; padding:1px 7px; font-family:var(--sans); font-weight:800}
+  .cards{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .card{background:#fff; border:1px solid var(--line); border-radius:13px; padding:12px 13px; display:flex; flex-direction:column; gap:7px; min-width:0}
+  .card.st-match{border-color:#D9A93F; box-shadow:0 0 0 2px rgba(217,169,63,.22)}
+  .card.st-love{border-color:#E0364F; box-shadow:0 0 0 2px rgba(224,54,79,.18)}
+  .card.st-no{opacity:.55}
+  .card .top{display:flex; align-items:flex-start; justify-content:space-between; gap:8px}
+  .card .name{font-weight:800; font-size:14.5px; line-height:1.2}
+  .card .zone{display:inline-flex; align-items:center; gap:6px; font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); font-weight:700; margin-top:3px}
+  .card .zone .dot{width:8px; height:8px; border-radius:50%}
+  .badge{flex:none; font-size:10px; font-weight:800; border-radius:6px; padding:2px 7px; white-space:nowrap}
+  .badge.match{background:#FBEFD0; color:#7A5600}
+  .badge.love{background:#FCE1E5; color:#A3172E}
+  .badge.clash{background:#ECE7F3; color:#553F7A}
+  .badge.date{background:var(--ochre); color:#2B1A00}
+  .card .desc{font-size:12.5px; color:var(--ink-soft); line-height:1.4}
+  .card .meta{font-size:11px; color:var(--ink-soft); display:flex; gap:4px 10px; flex-wrap:wrap; font-weight:600}
+  .card .tip{font-size:11.5px; color:#6A4A12; background:#FBF3DF; border-radius:7px; padding:5px 8px; line-height:1.35}
+  .vote{display:flex; align-items:center; gap:6px; padding-top:8px; border-top:1px dashed var(--line); flex-wrap:wrap}
+  .vote .vb{width:38px; height:34px; border-radius:10px; border:1.5px solid var(--line); background:#fff; cursor:pointer; font-size:16px; line-height:1; display:grid; place-items:center; filter:grayscale(1); opacity:.6; transition:.12s}
+  .vote .vb[aria-pressed="true"]{filter:none; opacity:1; border-color:var(--ink); background:#FFF6E6; transform:scale(1.06)}
+  .vote .oth{margin-left:auto; font-size:11.5px; font-weight:700; color:var(--ink-soft)}
+  .plan{display:flex; gap:6px; align-items:center}
+  .plan select{flex:1; min-width:0; font-size:12px; padding:7px 6px; border-radius:8px; border:1px solid var(--line); background:#fff; color:var(--ink); font-weight:600}
+  .plan a{flex:none; font-size:11.5px; font-weight:700; color:var(--lake); text-decoration:none; border:1px solid var(--line); border-radius:8px; padding:6px 8px; background:#fff}
+  .card .rm{border:0; background:none; color:var(--wine); font-size:11.5px; font-weight:700; cursor:pointer; padding:0; align-self:flex-start}
+  .addidea{display:flex; gap:6px; margin:6px 0 4px}
+  .addidea input{flex:1; min-width:0; border:1px solid var(--line); border-radius:9px; padding:9px 10px; font-size:13px; background:#fff}
+  .btn{border:0; background:var(--ink); color:#fff; border-radius:9px; padding:9px 13px; font-size:13px; font-weight:700; cursor:pointer}
+  .btn.wa{background:#25D366; color:#06381B}
+  .btn.alt{background:#fff; color:var(--ink); border:1px solid var(--line)}
+  .btn.wine{background:var(--wine)}
+  .note{font-size:11.5px; color:var(--ink-soft); line-height:1.45}
+
+  /* ---------- planning ---------- */
+  .planbar{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 10px}
+  .daybar{background:var(--ink); border-radius:11px; padding:9px 10px; margin:0 0 10px}
+  .daybar .dtitle{font-size:10.5px; font-weight:800; color:#CDBBA9; letter-spacing:.1em; text-transform:uppercase; margin-bottom:8px}
+  .daystrip{display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; scrollbar-width:none}
+  .daystrip::-webkit-scrollbar{display:none}
+  .daystrip button{flex:0 0 auto; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); color:#EADDCF; border-radius:9px; padding:6px 9px; font-size:11.5px; font-weight:700; cursor:pointer; line-height:1.15; text-align:center; position:relative}
+  .daystrip button .dd{font-family:var(--disp); font-size:16px; display:block}
+  .daystrip button[aria-pressed="true"]{background:#F8EFE2; color:var(--ink); border-color:#F8EFE2}
+  .daystrip button.today::after{content:""; position:absolute; top:4px; right:4px; width:6px; height:6px; border-radius:50%; background:#F2C879}
+  .day{border-bottom:1px solid var(--line); padding:12px 2px 13px}
+  .day:last-child{border-bottom:0}
+  .day-h{display:flex; align-items:baseline; justify-content:space-between; gap:8px}
+  .day-h .dow{font-weight:800; font-size:15px}
+  .day-h .dow small{font-weight:600; color:var(--ink-soft)}
+  .day-h .cnt{font-size:10.5px; font-weight:800; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.08em}
+  .day .theme{font-family:var(--disp); font-style:italic; font-size:14.5px; color:var(--wine); margin:1px 0 6px}
+  .evline{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:0 0 6px; font-size:11px; font-weight:800; color:#7A5600; text-transform:uppercase; letter-spacing:.06em}
+  .slot{display:grid; grid-template-columns:84px minmax(0,1fr); gap:10px; padding:6px 0; border-top:1px dashed var(--line)}
+  .slot-h{font-weight:800; font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-soft); padding-top:6px}
+  .slot-body{display:flex; flex-wrap:wrap; gap:6px; align-items:center; min-height:28px}
+  .slot-empty{font-size:11px; color:#B5A898}
+  .pick{background:#fff; border:1px solid var(--line); border-radius:12px; padding:4px 5px 4px 9px; font-size:12px; font-weight:700; display:inline-flex; align-items:center; gap:6px; max-width:100%; flex-wrap:wrap}
+  .pick .pn{display:inline-flex; align-items:baseline; gap:7px; min-width:0}
+  .pick .pc{display:inline-flex; align-items:center; gap:4px; margin-left:auto}
+  .pick .pdot{width:8px; height:8px; border-radius:50%; flex:none}
+  .pick .pv{font-size:11px}
+  .pick .warn{font-size:10.5px; font-weight:800; color:#A3172E; background:#FCE1E5; border-radius:6px; padding:1px 6px}
+  .pick select{border:0; background:transparent; font-size:11px; font-weight:700; color:var(--ink-soft); cursor:pointer; padding:0 2px}
+  .pick .x{cursor:pointer; width:20px; height:20px; border-radius:50%; background:var(--paper); display:grid; place-items:center; font-size:12px; color:var(--ink-soft); border:0; padding:0}
+  .sugg{border:1.5px dashed rgba(47,93,80,.55); background:rgba(47,93,80,.06); color:var(--forest); border-radius:999px; padding:4px 10px; font-size:11.5px; font-weight:700; cursor:pointer; text-transform:none; letter-spacing:0}
+  .anchor{font-size:11.5px; font-weight:800; background:#EFE6D6; color:var(--ink-soft); border-radius:8px; padding:5px 9px}
+  .packsel{width:100%; margin:0 0 6px; font-size:12px; font-weight:700; padding:7px 8px; border-radius:9px; border:1px dashed var(--line); background:#fff; color:var(--ink-soft)}
+  .sugg.ev{border-color:rgba(200,134,42,.8); background:rgba(200,134,42,.1); color:#7A5600}
+  footer{font-size:11.5px; color:var(--ink-soft); padding:0 0 30px}
+
+  /* ---------- feuille de partage & accueil ---------- */
+  .overlay{position:fixed; inset:0; background:rgba(30,18,12,.55); z-index:2000; display:none; align-items:flex-end; justify-content:center}
+  .overlay.open{display:flex}
+  .sheet{background:var(--card); width:min(560px,100%); max-height:92vh; overflow:auto; border-radius:20px 20px 0 0; padding:18px 18px calc(20px + env(safe-area-inset-bottom)); box-shadow:0 -10px 40px rgba(0,0,0,.35)}
+  .sheet h2{font-family:var(--disp); font-size:24px; margin:0 0 4px}
+  .sheet h3{font-size:11px; text-transform:uppercase; letter-spacing:.12em; color:var(--ink-soft); margin:18px 0 8px}
+  #nameBox[hidden],#pickBox[hidden],#joinBox[hidden]{display:none}
+  .sheet .close{float:right; border:0; background:var(--paper); width:32px; height:32px; border-radius:50%; font-size:16px; cursor:pointer; color:var(--ink-soft)}
+  .sheet textarea,.sheet input[type=text]{width:100%; border:1px solid var(--line); border-radius:10px; padding:10px 11px; font-size:14px; background:#fff; color:var(--ink)}
+  .sheet textarea{min-height:84px; font-size:12px; resize:vertical}
+  .sheet label{display:block; font-size:12px; font-weight:700; color:var(--ink-soft); margin:10px 0 4px}
+  .row{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+  .row .btn{flex:1 1 auto}
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px}
+  .stat{background:#fff; border:1px solid var(--line); border-radius:10px; padding:8px 10px}
+  .stat b{display:block; font-family:var(--disp); font-size:22px; line-height:1.1}
+  .stat span{display:block; font-size:11px; line-height:1.25; margin-top:2px; color:var(--ink-soft); font-weight:700}
+  .msg{margin-top:10px; font-size:12.5px; font-weight:700; border-radius:9px; padding:8px 10px; background:#E8F3EC; color:#1F5136}
+  .msg.err{background:#FCE1E5; color:#A3172E}
+  ol.how{margin:6px 0 0; padding-left:20px; font-size:12.5px; color:var(--ink-soft)}
+  #toast{position:fixed; left:50%; bottom:86px; transform:translateX(-50%); background:var(--ink); color:#fff; font-size:13px; font-weight:700; padding:10px 14px; border-radius:10px; z-index:3000; max-width:90vw; display:none; box-shadow:0 8px 24px rgba(0,0,0,.35)}
+
+  .tabbar{display:none}
+  @media (min-width:1041px){ .overlay{align-items:center} .sheet{border-radius:20px} #toast{bottom:30px} }
+  @media (max-width:1040px){
+    body{padding-bottom:74px}
+    .subline{display:none}
+    header{padding:16px 0 30px}
+    .app{grid-template-columns:1fr; gap:0}
+    #col-ideas,#col-plan{display:none}
+    body[data-tab="ideas"] #col-ideas{display:block}
+    body[data-tab="plan"] #col-plan{display:block}
+    .panel-body{max-height:none; overflow:visible}
+    .cards{grid-template-columns:1fr}
+    .lmap{height:40vh; min-height:260px}
+    .hdr-share{display:none}
+    .tabbar{display:flex; position:fixed; left:0; right:0; bottom:0; z-index:1000; background:var(--ink); border-top:2px solid var(--ochre); padding:6px 8px calc(6px + env(safe-area-inset-bottom))}
+    .tabbar button{flex:1; position:relative; border:0; background:transparent; cursor:pointer; color:#B9A999; font-weight:700; font-size:11.5px; display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; border-radius:10px}
+    .tabbar button .ti{font-size:19px; line-height:1}
+    .tabbar button[aria-pressed="true"]{color:#fff; background:rgba(255,255,255,.09)}
+    .tabbar .tb{position:absolute; top:3px; right:calc(50% - 30px); background:var(--ochre); color:#2B1A00; font-size:10px; font-weight:800; min-width:16px; height:16px; border-radius:9px; display:grid; place-items:center; padding:0 4px}
+    .tabbar .tb.dot{min-width:10px; width:10px; height:10px; padding:0; background:#25D366; right:calc(50% - 22px)}
+  }
+</style>
+</head>
+<body data-tab="ideas">
+
+<header>
+  <div class="wrap">
+    <p class="eyebrow">Piémont · 2 → 11 octobre 2026</p>
+    <h1>Biella, <em>Torino</em> &amp; Milano</h1>
+    <p class="subline">Chacun vote sur les idées (❤️ j'adore · 👍 pourquoi pas · 👎 non), on repère les matchs, on les place dans le planning, puis on s'envoie le tout par WhatsApp pour fusionner les deux téléphones.</p>
+    <div class="who">
+      <span class="lbl">Je vote en tant que</span>
+      <div class="whoseg" id="whoseg"></div>
+      <button class="ghost" id="btnNames" aria-label="Modifier les prénoms">✎</button>
+      <button class="ghost share hdr-share" id="btnShareTop">Partager par WhatsApp</button>
+    </div>
+    <div class="spine" id="spine"></div>
+  </div>
+  <svg class="ridge" viewBox="0 0 1200 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 L0 20 L70 12 L130 19 L210 6 L270 16 L340 9 L420 20 L500 4 L560 14 L640 8 L720 19 L800 10 L870 17 L950 5 L1020 15 L1100 9 L1160 16 L1200 11 L1200 30 Z" fill="#F3ECE0"/></svg>
+</header>
+
+<main>
+  <div class="wrap savebar"><span class="save-status" id="saveStatus">Sauvegarde automatique sur cet appareil</span><span class="save-status" id="syncStatus" hidden></span></div>
+
+  <div class="wrap app">
+    <!-- IDÉES -->
+    <section class="panel" id="col-ideas">
+      <div class="col-head"><h2>Idées</h2><span class="cc"><b id="cVoted">0</b>/<span id="cTotal">0</span> votées · <b id="cMatch">0</b> matchs</span></div>
+      <div class="panel-body">
+        <div class="mapwrap">
+          <div class="mmbar"><span class="mmtitle">Les idées sur la carte</span><button class="locbtn" id="loc-s"><span class="pin">◉</span> Ma position</button></div>
+          <div id="map-s" class="lmap"></div>
+          <div class="mapmsg" id="msg-s" hidden></div>
+          <div class="maplegend" id="legend"></div>
+        </div>
+        <div class="filters">
+          <div class="scroller"><div class="seg" id="viewseg"></div></div>
+          <div class="scroller"><div class="seg" id="zoneseg"></div></div>
+          <div class="scroller" id="typechips"></div>
+          <div class="frow"><span class="counter"><b id="cShown">0</b> idées affichées</span><button class="lnk" id="btnResetF">Tout afficher</button></div>
+        </div>
+        <div id="catalog"></div>
+        <div class="cat">
+          <h3><span class="dot" style="background:#8A7A6D"></span>Ajouter une idée perso</h3>
+          <div class="addidea"><input id="ideaName" type="text" maxlength="60" placeholder="Ex. : resto conseillé par l'hôte"><button class="btn" id="btnIdea">Ajouter</button></div>
+          <p class="note">Elle apparaît dans « Nos idées », se vote et se planifie comme les autres (sans point sur la carte).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLANNING -->
+    <section class="panel" id="col-plan">
+      <div class="col-head"><h2>Planning</h2><span class="cc"><b id="cPlan">0</b> planifiées</span></div>
+      <div class="panel-body">
+        <div class="mapwrap">
+          <div class="mmbar"><span class="mmtitle" id="planmaptitle">Carte du planning · tout</span><button class="locbtn" id="loc-p"><span class="pin">◉</span> Ma position</button></div>
+          <div id="map-p" class="lmap"></div>
+          <div class="mapmsg" id="msg-p" hidden></div>
+        </div>
+        <div class="planbar">
+          <button class="btn wine" id="btnSugg">✨ Adopter le programme suggéré</button>
+          <button class="btn alt" id="btnEmpty">Vider le planning</button>
+        </div>
+        <div class="daybar"><div class="dtitle">Filtrer par jour</div><div class="daystrip" id="daystrip"></div></div>
+        <div id="days"></div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="wrap"><p>Prix, horaires et jours de fermeture sont indicatifs : à vérifier sur les sites officiels avant de partir. Trajets estimés depuis Biella. Les événements datés viennent des agendas locaux consultés le 2 octobre 2026. Certaines adresses de restaurants sont citées de mémoire : un coup de fil avant de s'y rendre.</p></footer>
+</main>
+
+<nav class="tabbar" id="tabbar">
+  <button data-tab="ideas" aria-pressed="true"><span class="ti">♡</span><span>Idées &amp; votes</span></button>
+  <button data-tab="plan" aria-pressed="false"><span class="ti">▤</span><span>Planning</span><span class="tb" id="tbPlan" hidden>0</span></button>
+  <button data-act="share" aria-pressed="false"><span class="ti">⇄</span><span>Partager</span><span class="tb dot" id="tbDirty" hidden></span></button>
+</nav>
+
+<!-- PARTAGE -->
+<div class="overlay" id="ovShare"><div class="sheet" role="dialog" aria-label="Partager">
+  <button class="close" data-close>✕</button>
+  <h2>Partager &amp; fusionner</h2>
+  <p class="note">Pas de serveur : chaque téléphone garde sa copie. On s'envoie un code par WhatsApp, l'autre le colle ici, et les deux versions fusionnent (le choix le plus récent gagne, vote par vote).</p>
+  <div class="stats" id="shareStats"></div>
+  <h3>Synchro automatique (GitHub)</h3>
+  <div id="syncOff">
+    <p class="note">Les deux téléphones lisent et écrivent le même petit fichier sur GitHub (un « gist » secret) : plus besoin d'échanger des codes. Il faut un jeton GitHub limité aux gists, à créer une seule fois.</p>
+    <label for="syTok">Jeton GitHub (permission « gist » uniquement)</label>
+    <input type="text" id="syTok" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ghp_…">
+    <label for="syGist">Identifiant du gist (laisser vide : il sera créé)</label>
+    <input type="text" id="syGist" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div class="row"><button class="btn" id="btnSyOn">Activer la synchro</button></div>
+  </div>
+  <div id="syncOn" hidden>
+    <p class="note" id="syInfo"></p>
+    <div class="row">
+      <button class="btn" id="btnSyNow">Synchroniser maintenant</button>
+      <button class="btn wa" id="btnSyWA">Inviter l'autre (WhatsApp)</button>
+      <button class="btn alt" id="btnSyCopy">Copier l'invitation</button>
+      <button class="btn alt" id="btnSyOff">Désactiver</button>
+    </div>
+  </div>
+  <div class="msg" id="syMsg" hidden></div>
+  <h3>Sans réseau · 1 · Envoyer mes choix</h3>
+  <div class="row">
+    <button class="btn wa" id="btnWA">Envoyer sur WhatsApp</button>
+    <button class="btn alt" id="btnNative">Autre appli…</button>
+    <button class="btn alt" id="btnCopy">Copier le code</button>
+  </div>
+  <h3>Sans réseau · 2 · Recevoir ceux de l'autre</h3>
+  <textarea id="inCode" placeholder="Colle ici le message WhatsApp reçu : code de choix ou invitation à la synchro"></textarea>
+  <div class="row">
+    <button class="btn alt" id="btnPaste">Coller</button>
+    <button class="btn" id="btnMerge">Fusionner</button>
+  </div>
+  <div class="msg" id="shareMsg" hidden></div>
+  <h3>Comment faire l'aller-retour</h3>
+  <ol class="how"><li>Sans synchro automatique : tu votes, tu touches « Envoyer sur WhatsApp ».</li><li>L'autre copie ton message, ouvre l'outil → Partager → Coller → Fusionner.</li><li>Il ou elle vote à son tour et te renvoie son code : tu fusionnes, vous avez la même chose.</li></ol>
+  <h3>Cet appareil</h3>
+  <div class="row"><button class="btn alt" id="btnReset">Réinitialiser cet appareil</button></div>
+</div></div>
+
+<!-- ACCUEIL / PRÉNOMS -->
+<div class="overlay" id="ovWho"><div class="sheet" role="dialog" aria-label="Prénoms">
+  <button class="close" data-close id="whoClose">✕</button>
+  <h2 id="whoTitle">Benvenuti !</h2>
+  <p class="note" id="whoIntro">Deux prénoms pour savoir qui vote quoi.</p>
+  <div id="nameBox">
+    <label for="nmMe">Ton prénom</label><input type="text" id="nmMe" maxlength="20" autocomplete="off">
+    <label for="nmOther">Le prénom de l'autre</label><input type="text" id="nmOther" maxlength="20" autocomplete="off">
+    <div class="row"><button class="btn wine" id="btnWhoOk">C'est parti</button></div>
+  </div>
+  <div id="pickBox" hidden>
+    <h3>Sur ce téléphone, je suis</h3>
+    <div class="row" id="pickRow"></div>
+  </div>
+  <div id="joinBox">
+    <h3>Ou : reprendre des choix existants</h3>
+    <textarea id="joinCode" placeholder="Colle ici son message WhatsApp : invitation à la synchro ou code de choix"></textarea>
+    <div class="row"><button class="btn alt" id="btnJoin">Charger ce code</button></div>
+    <div class="msg err" id="joinMsg" hidden></div>
+  </div>
+</div></div>
+
+<div id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* ================= DONNÉES ================= */
+const ZONES={
+  bi:{l:"Biellese",c:"#2F5D50"},
+  to:{l:"Turin",c:"#7B1E2B"},
+  mi:{l:"Milan",c:"#C8862A"},
+  ex:{l:"Lacs & alentours",c:"#2E6F8E"}
+};
+const TYPES={
+  event:{l:"Événements datés",c:"#C8862A"},
+  nature:{l:"Nature & montagne",c:"#2F5D50"},
+  rando:{l:"Randonnées (3 niveaux)",c:"#4F7A3A"},
+  culture:{l:"Culture & musées",c:"#7B1E2B"},
+  sacre:{l:"Sanctuaires & Sacri Monti",c:"#6D5A8C"},
+  village:{l:"Villages & balades",c:"#B0652F"},
+  resto:{l:"Restos à réserver",c:"#8C3B1F"},
+  food:{l:"Marchés, dégustations & sur le pouce",c:"#C0492F"},
+  soir:{l:"Soirées",c:"#3D3A6B"},
+  shop:{l:"Shopping & textile",c:"#B5578E"},
+  spa:{l:"Bien-être",c:"#3A8FA0"},
+  insolite:{l:"Sport & insolite",c:"#55606E"},
+  perso:{l:"Nos idées",c:"#8A7A6D"}
+};
+const T_TO="≈ 1 h 🚗 · 1 h–1 h 20 🚆", T_MI="≈ 1 h 20 🚗 · 1 h 30–2 h 🚆";
+const POIS=[
+/* ---------- ÉVÉNEMENTS DATÉS ---------- */
+{id:"fumetti",z:"bi",t:"event",n:"Fumetti al Ricetto (Candelo)",lat:45.5449,lng:8.1136,dates:[3,4],dur:"2 h",pr:"À vérifier",tr:"10 min 🚗",d:"11e festival de BD humoristique dans le bourg médiéval : invité Silver, artist alley, ateliers."},
+{id:"pailet",z:"bi",t:"event",n:"Sagra del Pailet (Ronco Biellese)",lat:45.5790,lng:8.0960,dates:[3],dur:"Soirée",pr:"€",tr:"10 min 🚗",d:"23e édition d'une vraie fête de village : cuisine locale servie sous chapiteau, ambiance du cru."},
+{id:"beeropu",z:"bi",t:"event",n:"Beeropù (Roppolo)",lat:45.4215,lng:8.0700,dates:[2],dur:"Soirée",pr:"€",tr:"30 min 🚗",d:"Fête de la bière au-dessus du lac de Viverone.",tip:"Annoncée le vendredi 2 ; vérifier si elle continue le week-end."},
+{id:"oropavisite",z:"bi",t:"event",n:"Visite guidée « Oropa e i suoi Tesori »",lat:45.6289,lng:7.9790,dates:[4],dur:"1 h 30",pr:"À vérifier",tr:"25 min 🚗",d:"Visite commentée du sanctuaire et de son trésor, dimanche à 11 h."},
+{id:"funghi",z:"bi",t:"event",n:"Andar per funghi (Oasi Zegna)",lat:45.6632,lng:8.0772,dates:[4],dur:"Journée",pr:"65 €",tr:"45 min 🚗",d:"Sortie champignons avec le groupe mycologique biellese, déjeuner au Bucaneve et atelier l'après-midi.",tip:"Inscription obligatoire sur oasizegna.com."},
+{id:"boscoautunno",z:"bi",t:"event",n:"Il Bosco d'Autunno – balade guidée foliage",lat:45.6705,lng:8.0700,dates:[10,11],dur:"2 h 30",pr:"À vérifier",tr:"45 min 🚗",d:"Balade guidée facile dans les couleurs d'automne de l'Oasi Zegna (programme à partir du 10 octobre).",tip:"Dates exactes et inscription sur oasizegna.com."},
+{id:"andrate",z:"ex",t:"event",n:"Festa della Polenta (Andrate)",lat:45.5275,lng:7.8790,dates:[4],dur:"1/2 j",pr:"€",tr:"35 min 🚗",d:"Polenta concia des maîtres polentari, foire aux bestiaux et expo de sonnailles, sur la Serra d'Ivrea."},
+{id:"hobbisti",z:"bi",t:"event",n:"Mercatino degli Hobbisti (Viverone)",lat:45.4228,lng:8.0512,dates:[4],dur:"1 h",pr:"Gratuit",tr:"30 min 🚗",d:"Petit marché d'artisans sur la promenade du lac, dès 10 h."},
+{id:"balon",z:"to",t:"event",n:"Brocante du Balon (Borgo Dora)",lat:45.0792,lng:7.6853,dates:[3,4,10,11],dur:"2 h",pr:"Gratuit",tr:T_TO,d:"Les puces historiques de Turin : chaque samedi, Festa del Balon le dim. 4 (concerts, visites guidées), Gran Balon des antiquaires le dim. 11."},
+{id:"trippa",z:"to",t:"event",n:"Fiera Nazionale della Trippa (Moncalieri)",lat:45.0005,lng:7.6850,dates:[2,3,4],dur:"2 h",pr:"€",tr:"≈ 1 h 10 🚗",d:"Foire labellisée « Sagra di Qualità » : 25 quintaux de tripes, show cooking, au PalaExpo."},
+{id:"chiostro",z:"mi",t:"event",n:"Chiostro in Fiera (artisanat d'art)",lat:45.4573,lng:9.1815,dates:[2,3,4],dur:"1 h 30",pr:"À vérifier",tr:T_MI,d:"Marché de haut artisanat dans le cloître du Museo Diocesano, 11 h–21 h."},
+{id:"montiglio",z:"ex",t:"event",n:"Fiera del Tartufo (Montiglio Monferrato)",lat:45.0660,lng:8.0980,dates:[3,4],dur:"1/2 j",pr:"€–€€",tr:"≈ 1 h 15 🚗",d:"40e foire nationale de la truffe blanche en Monferrato : dégustations, artisanat, collines de vignes."},
+{id:"turnonotte",z:"bi",t:"event",n:"Turno di notte – balade théâtrale nocturne (Valdilana)",lat:45.6600,lng:8.1600,dates:[9,10],dur:"1 h 40",pr:"À vérifier",tr:"40 min 🚗",d:"12e édition : marche de nuit sur les sentiers ouvriers du textile, ponctuée de scènes jouées par des comédiens. Départ 19 h 50.",tip:"Spectacle en italien ; inscription à vérifier."},
+{id:"gemelli",z:"bi",t:"event",n:"Gemelli di Guidonia Show (Cossato)",lat:45.5700,lng:8.1830,dates:[9],dur:"Soirée",pr:"Billet",tr:"20 min 🚗",d:"Concert-spectacle du trio vocal vu à la télé italienne, avec le chœur Noi Cantando. 21 h."},
+{id:"lunapark",z:"to",t:"event",n:"Luna Park de la Pellerina (Turin)",lat:45.0850,lng:7.6380,dates:[3,4,5,6,7,8,9,10,11],dur:"Soirée",pr:"€",tr:T_TO,d:"La grande fête foraine d'automne de Turin, du 3 octobre au 8 novembre."},
+{id:"torinodanza",z:"to",t:"event",n:"Torinodanza Festival (Moncalieri)",lat:45.0010,lng:7.6790,dates:[2,3,4,5,6,7,8,9,10,11],dur:"Soirée",pr:"Billet",tr:"≈ 1 h 10 🚗",d:"Danse contemporaine internationale aux Fonderie Limone, jusqu'au 11 octobre.",tip:"Spectacles certains soirs seulement : voir le programme."},
+{id:"pausini",z:"mi",t:"event",n:"Concert Laura Pausini (Unipol Forum, Milan)",lat:45.4010,lng:9.1420,dates:[4,5,6,7],dur:"Soirée",pr:"Billet",tr:"≈ 1 h 20 🚗",d:"Quatre soirs à Assago, 21 h.",tip:"Places probablement rares : vérifier la billetterie."},
+{id:"alba",z:"ex",t:"event",n:"Foire de la truffe blanche d'Alba",lat:44.7005,lng:8.0355,dates:[10,11],dur:"Journée",pr:"Billet payant",tr:"≈ 1 h 40 🚗 (au-delà de Turin)",d:"96e édition, ouverture le 10 : marché mondial de la truffe (sam. 9 h 30–19 h 30, dim. 9 h 30–19 h), vins des Langhe.",tip:"Week-end d'ouverture très couru : réserver billet et restaurant."},
+
+/* ---------- BIELLESE ---------- */
+{id:"oropa",z:"bi",t:"sacre",n:"Santuario di Oropa",lat:45.6284,lng:7.9797,dur:"2–3 h",pr:"Gratuit (musée ≈ 5 €)",tr:"25 min 🚗 · bus",d:"Le plus grand sanctuaire marial des Alpes, à 1 200 m : cours monumentales, Vierge noire, Sacro Monte classé UNESCO."},
+{id:"mucrone",z:"bi",t:"nature",lvl:"Facile",n:"Funivie d'Oropa & Lago del Mucrone",lat:45.6308,lng:7.9722,dur:"1/2 j",pr:"≈ 15–20 € A/R",tr:"25 min 🚗",d:"Téléphérique depuis le sanctuaire puis balade facile jusqu'au lac d'altitude, vers 1 900 m.",tip:"Ouverture variable hors saison : vérifier avant de monter."},
+{id:"piazzo",z:"bi",t:"village",n:"Biella Piazzo & funiculaire",lat:45.5667,lng:8.0463,dur:"1 h 30",pr:"Gratuit",tr:"Sur place",d:"La ville haute médiévale : arcades de Piazza Cisterna, palais Gromo Losa et La Marmora, vues sur les Alpes. Funiculaire gratuit."},
+{id:"battistero",z:"bi",t:"culture",n:"Baptistère & Duomo de Biella",lat:45.5659,lng:8.0537,dur:"30 min",pr:"Gratuit",tr:"Sur place",d:"Petit baptistère roman du XIe siècle, emblème de la ville, accolé à la cathédrale."},
+{id:"cittadellarte",z:"bi",t:"culture",n:"Cittadellarte – Fondazione Pistoletto",lat:45.5722,lng:8.0597,dur:"1 h 30",pr:"≈ 10 €",tr:"Sur place",d:"Ancienne filature au bord du Cervo devenue laboratoire d'art contemporain de Michelangelo Pistoletto (Arte Povera).",tip:"Visites surtout le week-end ou sur réservation."},
+{id:"mebo",z:"bi",t:"food",n:"MeBo – musée Menabrea & Botalla",lat:45.5704,lng:8.0526,dur:"1 h 30",pr:"≈ 10–15 €",tr:"Sur place",d:"La plus ancienne brasserie d'Italie encore en activité (1846) et le fromager Botalla : visite puis dégustation bière et fromages.",tip:"Sur réservation (mebomuseum.it)."},
+{id:"menabrea",z:"bi",t:"resto",q:"Birreria Menabrea Biella",n:"Birreria Menabrea (dîner)",lat:45.5700,lng:8.0532,dur:"Repas",pr:"€€",tr:"Sur place",d:"Brasserie-restaurant attenante à l'usine : bière tirée à la source et cuisine piémontaise."},
+{id:"viaitalia",z:"bi",t:"food",n:"Via Italia : aperitivo & pâtisseries",lat:45.5648,lng:8.0543,dur:"1 h",pr:"€",tr:"Sur place",d:"La rue piétonne de Biella : canestrelli et ratafià chez De Mori, torcetti, cafés et spritz en terrasse."},
+{id:"polenta",z:"bi",t:"resto",q:"Ristorante Croce Bianca Oropa",n:"Polenta concia au Croce Bianca (Oropa)",lat:45.6276,lng:7.9812,dur:"Repas",pr:"€€",tr:"25 min 🚗",d:"La spécialité biellese, noyée de toma et de beurre, dans le restaurant historique du sanctuaire.",tip:"Réserver le dimanche midi."},
+{id:"ratafia",z:"bi",t:"food",n:"Ratafià d'Andorno (liquoristerie Rapa)",lat:45.6105,lng:8.0555,dur:"30 min",pr:"€",tr:"15 min 🚗",d:"Liqueur de cerises noires produite depuis 1880 à Andorno Micca : boutique et dégustation."},
+{id:"gattinara",z:"bi",t:"food",n:"Vins de Gattinara & Lessona",lat:45.6170,lng:8.3665,dur:"1/2 j",pr:"€€",tr:"40 min 🚗",d:"Les nebbiolos du Haut-Piémont : Travaglini ou Anzivino à Gattinara, Tenute Sella à Lessona, plus l'enothèque régionale.",tip:"Visites et dégustations en cave sur réservation."},
+{id:"fila",z:"bi",t:"insolite",n:"Fondazione FILA Museum",lat:45.5632,lng:8.0502,dur:"1 h",pr:"Gratuit",tr:"Sur place",d:"L'histoire de la marque née à Biella en 1911 : Borg, Messner, archives sportswear.",tip:"Ouvertures limitées : réserver."},
+{id:"museoterr",z:"bi",t:"culture",n:"Museo del Territorio Biellese",lat:45.5627,lng:8.0538,dur:"1 h",pr:"≈ 5 €",tr:"Sur place",d:"Dans le cloître Renaissance de San Sebastiano : archéologie, section égyptienne, peinture piémontaise."},
+{id:"burcina",z:"bi",t:"nature",lvl:"Facile",n:"Parco Burcina (Pollone)",lat:45.5853,lng:8.0075,dur:"1 h 30",pr:"Gratuit",tr:"15 min 🚗",d:"Colline-jardin plantée d'arbres rares : couleurs d'automne superbes et vue sur toute la plaine."},
+{id:"candelo",z:"bi",t:"village",n:"Ricetto di Candelo",lat:45.5444,lng:8.1130,dur:"1 h 30",pr:"Gratuit",tr:"10 min 🚗",d:"Bourg fortifié médiéval intact, l'un des mieux conservés d'Europe : ruelles pavées, caves, tours."},
+{id:"zegna",z:"bi",t:"nature",n:"Oasi Zegna – Panoramica Zegna",lat:45.6625,lng:8.0790,dur:"1/2 j",pr:"Gratuit",tr:"45 min 🚗",d:"Route panoramique de 26 km voulue par Ermenegildo Zegna : belvédères sur le Mont Rose, hêtraies flamboyantes en octobre."},
+{id:"sorriso",z:"bi",t:"nature",lvl:"Facile",n:"Bosco del Sorriso (Bocchetto Sessera)",lat:45.6717,lng:8.0683,dur:"2 h",pr:"Gratuit",tr:"50 min 🚗",d:"Sentier facile en hêtraie, le spot foliage de l'Oasi Zegna (pic de mi-octobre à début novembre)."},
+{id:"casazegna",z:"bi",t:"culture",n:"Casa Zegna (Trivero)",lat:45.6655,lng:8.1625,dur:"1 h",pr:"€",tr:"40 min 🚗",d:"Archives et expositions de la maison Zegna, à côté du lanificio historique.",tip:"Ouvert surtout le dimanche : vérifier."},
+{id:"graglia",z:"bi",t:"sacre",n:"Santuario di Graglia",lat:45.5585,lng:7.9612,dur:"1 h",pr:"Gratuit",tr:"25 min 🚗",d:"Sanctuaire baroque en balcon sur la plaine, plus intime qu'Oropa."},
+{id:"rosazza",z:"bi",t:"village",n:"Rosazza & Valle Cervo",lat:45.6765,lng:7.9765,dur:"2 h",pr:"Gratuit",tr:"30 min 🚗",d:"Le village « le plus mystérieux d'Italie » : symboles maçonniques et ésotériques, maisons de pierre, torrent."},
+{id:"sangiovanni",z:"bi",t:"sacre",n:"Santuario di San Giovanni d'Andorno",lat:45.6645,lng:7.9905,dur:"1 h",pr:"Gratuit",tr:"30 min 🚗",d:"Sanctuaire de montagne en Valle Cervo, avec auberge et départs de sentiers."},
+{id:"bose",z:"bi",t:"sacre",n:"Monastero di Bose (Magnano)",lat:45.4655,lng:8.0050,dur:"1 h",pr:"Gratuit",tr:"25 min 🚗",d:"Communauté monastique œcuménique sur la Serra : silence, boutique de confitures et céramiques du monastère."},
+{id:"bessa",z:"bi",t:"insolite",n:"Riserva della Bessa & orpaillage (Vermogno)",lat:45.4862,lng:7.9905,dur:"1/2 j",pr:"€",tr:"20 min 🚗",d:"La plus grande mine d'or à ciel ouvert de l'Empire romain : amas de galets, musée de l'or, initiation à la batée dans l'Elvo.",tip:"Orpaillage sur réservation (Ecomuseo dell'Oro)."},
+{id:"viverone",z:"bi",t:"nature",n:"Lago di Viverone",lat:45.4236,lng:8.0500,dur:"2 h",pr:"Gratuit",tr:"30 min 🚗",d:"Lac morainique : promenade au bord de l'eau, bateaux, terrasses et coucher de soleil."},
+{id:"zumaglia",z:"bi",t:"nature",n:"Brich di Zumaglia",lat:45.5945,lng:8.0895,dur:"1 h",pr:"Gratuit",tr:"15 min 🚗",d:"Petit château et parc boisé sur une colline : balade courte, panorama à 360°."},
+{id:"masino",z:"bi",t:"culture",n:"Castello di Masino (FAI)",lat:45.3935,lng:7.9585,closed:[1,2],dur:"2–3 h",pr:"≈ 15 €",tr:"40 min 🚗",d:"Château millénaire des comtes Valperga : salons fresqués, parc, labyrinthe et vue sur le Canavese."},
+{id:"theplace",z:"bi",t:"shop",n:"The Place Luxury Outlet (Sandigliano)",lat:45.5180,lng:8.0790,dur:"1 h",pr:"€€€",tr:"10 min 🚗",d:"Outlet Zegna et Agnona : laine et cachemire haut de gamme à prix d'usine, café sur place."},
+{id:"piacenza",z:"bi",t:"shop",n:"Fratelli Piacenza – outlet cachemire (Pollone)",lat:45.5805,lng:8.0045,dur:"45 min",pr:"€€€",tr:"15 min 🚗",d:"Lanificio fondé en 1733 : cachemire, manteaux et écharpes à la boutique d'usine."},
+{id:"cerruti",z:"bi",t:"shop",n:"Lanificio Cerruti – outlet (Biella)",lat:45.5708,lng:8.0575,dur:"45 min",pr:"€€",tr:"Sur place",d:"Tissus et prêt-à-porter du lanificio historique, au bord du Cervo."},
+
+/* ---------- RANDONNÉES ---------- */
+{id:"preti",z:"bi",t:"rando",lvl:"Facile",n:"Passeggiata dei Preti (Oropa)",lat:45.6296,lng:7.9825,dur:"1 h",pr:"Gratuit",tr:"25 min 🚗",d:"Promenade presque plate en sous-bois depuis le sanctuaire, idéale après le déjeuner."},
+{id:"lagomucrone",z:"bi",t:"rando",lvl:"Moyen · 675 m D+",n:"Lago del Mucrone à pied depuis Oropa",lat:45.6302,lng:7.9735,dur:"≈ 5 h A/R",pr:"Gratuit",tr:"25 min 🚗",d:"8,5 km en forêt puis en balcon sur le sanctuaire et la plaine, jusqu'au lac glaciaire à 1 894 m. Retour possible par le Lago delle Bose.",tip:"Le sanctuaire organise aussi des sorties guidées (≈ 15 €)."},
+{id:"vecchia",z:"bi",t:"rando",lvl:"Moyen · ≈ 800 m D+",n:"Lago della Vecchia (depuis Piedicavallo)",lat:45.6905,lng:7.9545,dur:"≈ 5 h A/R",pr:"Gratuit",tr:"35 min 🚗",d:"Belle mulatière de pierre au fond de la Valle Cervo jusqu'à un lac d'altitude et son refuge. Se combine avec Rosazza.",tip:"Dénivelé et temps approximatifs : vérifier la trace avant de partir."},
+{id:"montemucrone",z:"bi",t:"rando",lvl:"Sportif · 1 150 m D+",n:"Monte Mucrone (2 335 m)",lat:45.6300,lng:7.9728,dur:"Journée",pr:"Gratuit",tr:"25 min 🚗",d:"Le sommet emblématique de Biella : 3 h de montée depuis Oropa par le lac, croix sommitale et vue du Mont Rose à la plaine.",tip:"Seulement 450 m D+ et 1 h 30 si le téléphérique fonctionne. Météo et neige précoce à vérifier."},
+{id:"camino",z:"bi",t:"rando",lvl:"Sportif · ≈ 1 200 m D+",n:"Monte Camino (2 388 m)",lat:45.6304,lng:7.9740,dur:"Journée",pr:"Gratuit",tr:"25 min 🚗",d:"Le plus beau panorama des Alpes biellaises, avec un refuge au sommet, au-dessus d'Oropa.",tip:"Chiffres approximatifs ; itinéraire long, à réserver à une journée de beau temps."},
+
+/* ---------- RESTOS, MARCHÉS, DÉGUSTATIONS, SOIRÉES (Biellese) ---------- */
+{id:"lacivetta",z:"bi",t:"resto",q:"La Civetta ristorante Biella",n:"La Civetta (Biella)",lat:45.5668,lng:8.0470,dur:"Repas",pr:"€€",tr:"Sur place",d:"Cuisine biellese : crostini à la saucisse de Bra, crespelle alla biellese gratinées à la toma."},
+{id:"torchio",z:"bi",t:"resto",q:"Il Torchio 1763 Candelo",n:"Il Torchio 1763 (Ricetto di Candelo)",lat:45.5446,lng:8.1128,dur:"Repas",pr:"€€",tr:"10 min 🚗",d:"Table piémontaise dans les murs du bourg médiéval.",tip:"Adresse citée de mémoire : vérifier qu'elle est ouverte et réserver."},
+{id:"mercatobiella",z:"bi",t:"food",q:"Mercato Piazza Falcone Biella",n:"Marché de Piazza Falcone (Biella)",lat:45.5590,lng:8.0560,dates:[3,5,8,10],dur:"1 h",pr:"€",tr:"Sur place",d:"Le grand marché de Biella : lundi et jeudi 7 h 30–13 h 30, samedi jusqu'à 17 h 30. Fromages, salumi, de quoi pique-niquer."},
+{id:"mosca",z:"bi",t:"food",q:"Macelleria Mosca Biella",n:"Macelleria Mosca (épicerie fine)",lat:45.5655,lng:8.0550,dur:"30 min",pr:"€€",tr:"Sur place",d:"L'adresse des Biellais pour les fromages (maccagno, toma), le salame della duja et les plats à emporter."},
+{id:"deiro",z:"bi",t:"food",q:"Caffè Deiro Oropa",n:"Caffè Deiro : mucroncini & chocolat chaud (Oropa)",lat:45.6280,lng:7.9805,dur:"30 min",pr:"€",tr:"25 min 🚗",d:"Les mucroncini, petits biscuits noisette-chocolat nés au pied du Mucrone."},
+{id:"centovigne",z:"bi",t:"food",q:"Centovigne Castello di Castellengo",n:"Centovigne – dégustation au château de Castellengo",lat:45.5560,lng:8.1960,dur:"1 h 30",pr:"€€",tr:"20 min 🚗",d:"Vins de Coste della Sesia élevés dans les caves d'un château, à Cossato.",tip:"Sur réservation."},
+{id:"piazzosoir",z:"bi",t:"soir",n:"Verre du soir sur Piazza Cisterna (Piazzo)",lat:45.5669,lng:8.0458,dur:"Soirée",pr:"€",tr:"Sur place",d:"La place à arcades de la ville haute, la plus jolie de Biella à la nuit tombée."},
+
+/* ---------- TURIN ---------- */
+{id:"egizio",z:"to",t:"culture",n:"Museo Egizio",lat:45.0684,lng:7.6843,dur:"2 h 30",pr:"≈ 18 €",tr:T_TO,d:"La plus importante collection égyptienne hors du Caire, magnifiquement mise en scène.",tip:"Réserver un créneau en ligne. Le lundi, ouvert le matin seulement."},
+{id:"mole",z:"to",t:"culture",n:"Mole Antonelliana & Museo del Cinema",lat:45.0690,lng:7.6932,closed:[2],dur:"2 h 30",pr:"≈ 16–20 €",tr:T_TO,d:"Le symbole de Turin : musée du cinéma spectaculaire et ascenseur de verre jusqu'au belvédère.",tip:"Ascenseur panoramique très demandé : billet combiné en ligne."},
+{id:"reale",z:"to",t:"culture",n:"Palazzo Reale & Musei Reali",lat:45.0728,lng:7.6862,closed:[3],dur:"2 h",pr:"≈ 15 €",tr:T_TO,d:"Appartements des Savoie, Armurerie royale, Galleria Sabauda et jardins."},
+{id:"venaria",z:"to",t:"culture",n:"Reggia di Venaria Reale",lat:45.1357,lng:7.6253,closed:[1],dur:"1/2 j",pr:"≈ 16–20 €",tr:"≈ 55 min 🚗",d:"Le « Versailles piémontais » (UNESCO) : Galleria Grande, jardins. Expo « Atelier des modernes » (Picasso, Matisse, Braque) depuis le 2 octobre."},
+{id:"stupinigi",z:"to",t:"culture",n:"Palazzina di Caccia di Stupinigi",lat:44.9952,lng:7.6043,closed:[1],dur:"1 h 30",pr:"≈ 12 €",tr:"≈ 1 h 10 🚗",d:"Pavillon de chasse rococo de Juvarra, coiffé de son cerf de bronze."},
+{id:"piazze",z:"to",t:"village",n:"De Piazza Castello à Piazza San Carlo",lat:45.0677,lng:7.6826,dur:"1 h 30",pr:"Gratuit",tr:T_TO,d:"18 km d'arcades : la balade royale par Via Roma, les cafés historiques et le « salon » de Turin."},
+{id:"superga",z:"to",t:"sacre",n:"Basilica di Superga",lat:45.0807,lng:7.7675,dur:"2 h",pr:"Gratuit (tombeaux €)",tr:"≈ 1 h 10 🚗",d:"Chef-d'œuvre baroque de Juvarra sur la colline : tombeaux des Savoie, mémorial du Grande Torino, panorama sur les Alpes.",tip:"Montée possible en tram à crémaillère depuis Sassi."},
+{id:"valentino",z:"to",t:"nature",n:"Parco del Valentino",lat:45.0545,lng:7.6870,dur:"1 h",pr:"Gratuit",tr:T_TO,d:"Le grand parc au bord du Pô, avec le château du Valentino."},
+{id:"cappuccini",z:"to",t:"nature",n:"Monte dei Cappuccini (coucher de soleil)",lat:45.0597,lng:7.6975,dur:"45 min",pr:"Gratuit",tr:T_TO,d:"La vue carte postale : la Mole devant la chaîne des Alpes."},
+{id:"portapalazzo",z:"to",t:"food",n:"Marché de Porta Palazzo & Mercato Centrale",lat:45.0766,lng:7.6836,closed:[0],dur:"1 h 30",pr:"€",tr:T_TO,d:"Le plus grand marché à ciel ouvert d'Europe, et la halle gourmande voisine pour déjeuner.",tip:"Marché surtout le matin."},
+{id:"bicerin",z:"to",t:"food",n:"Caffè Al Bicerin",lat:45.0763,lng:7.6791,dur:"30 min",pr:"€",tr:T_TO,d:"Depuis 1763 : le bicerin, café-chocolat-crème servi en verre, face à la Consolata."},
+{id:"gobino",z:"to",t:"food",n:"Chocolat & gianduiotti",lat:45.0652,lng:7.6838,dur:"30 min",pr:"€€",tr:T_TO,d:"La capitale italienne du chocolat : gianduiotti et cremini chez les maîtres chocolatiers du centre (Gobino, Peyrano, Baratti)."},
+{id:"quadrilatero",z:"to",t:"soir",n:"Aperitivo au Quadrilatero Romano",lat:45.0742,lng:7.6797,dur:"Soirée",pr:"€€",tr:T_TO,d:"Turin a inventé le vermouth : apéro généreux dans les ruelles du quartier romain."},
+{id:"eataly",z:"to",t:"food",n:"Eataly Lingotto & Pista 500",lat:45.0322,lng:7.6665,closed:[1],dur:"2 h",pr:"€€",tr:T_TO,d:"Le premier Eataly, dans l'ancienne usine Fiat ; sur le toit, la piste d'essai et la Pinacoteca Agnelli.",tip:"Eataly ouvre tous les jours ; c'est le toit (Pinacoteca) qui ferme le lundi."},
+{id:"lavazza",z:"to",t:"culture",n:"Museo Lavazza",lat:45.0802,lng:7.6952,closed:[1,2],dur:"1 h 30",pr:"≈ 10 €",tr:T_TO,d:"Musée interactif du café dans le siège « Nuvola », dégustation en fin de parcours."},
+{id:"mauto",z:"to",t:"insolite",n:"MAUTO – Museo dell'Automobile",lat:45.0312,lng:7.6741,dur:"2 h",pr:"≈ 15–18 €",tr:T_TO,d:"200 voitures de légende dans la ville de Fiat, scénographie très réussie."},
+{id:"juve",z:"to",t:"insolite",n:"Juventus Museum & Allianz Stadium",lat:45.1096,lng:7.6412,closed:[2],dur:"2 h",pr:"≈ 25–30 €",tr:"≈ 55 min 🚗",d:"Musée du club et visite des coulisses du stade.",tip:"Pas de match à domicile pendant le séjour (Juve–Lazio le 18)."},
+{id:"viaroma",z:"to",t:"shop",n:"Shopping Via Roma, Lagrange & Garibaldi",lat:45.0662,lng:7.6818,dur:"2 h",pr:"€€",tr:T_TO,d:"Grandes enseignes et maisons italiennes sous les arcades, Via Garibaldi pour les prix doux."},
+{id:"qcto",z:"to",t:"spa",n:"QC Termetorino",lat:45.0640,lng:7.6652,dur:"1/2 j",pr:"≈ 50–70 €",tr:T_TO,d:"Spa urbain dans un palais du XIXe : bassins, saunas, jardin et aperitivo inclus.",tip:"Réserver l'entrée en ligne."},
+{id:"tregalline",z:"to",t:"resto",q:"Ristorante Tre Galline Torino",n:"Tre Galline (Turin)",lat:45.0752,lng:7.6822,dur:"Repas",pr:"€€€",tr:T_TO,d:"L'une des plus vieilles tables de Turin : agnolotti, bollito misto au chariot.",tip:"Réserver."},
+{id:"portosavona",z:"to",t:"resto",q:"Porto di Savona Torino",n:"Porto di Savona (Turin)",lat:45.0648,lng:7.6945,dur:"Repas",pr:"€€",tr:T_TO,d:"Trattoria de 1863 sur Piazza Vittorio Veneto : cuisine piémontaise classique à prix sages."},
+{id:"mulassano",z:"to",t:"food",q:"Caffè Mulassano Torino",n:"Caffè Mulassano (Turin)",lat:45.0707,lng:7.6862,dur:"30 min",pr:"€",tr:T_TO,d:"Minuscule café Belle Époque de Piazza Castello, où serait né le tramezzino."},
+{id:"martini",z:"to",t:"food",q:"Casa Martini Pessione",n:"Casa Martini – vermouth (Pessione)",lat:44.9690,lng:7.8450,dur:"2 h",pr:"€€",tr:"≈ 1 h 15 🚗",d:"Le berceau du vermouth Martini : musée, visite et atelier de dégustation.",tip:"Sur réservation uniquement."},
+{id:"sansalvario",z:"to",t:"soir",n:"Soirée à San Salvario (Turin)",lat:45.0570,lng:7.6800,dur:"Soirée",pr:"€€",tr:T_TO,d:"Le quartier des bars et de la vie nocturne, entre Porta Nuova et le Valentino.",tip:"Dernier train pour Biella tôt en soirée : prévoir la voiture."},
+
+/* ---------- MILAN ---------- */
+{id:"duomo",z:"mi",t:"culture",n:"Duomo de Milan & terrasses",lat:45.4641,lng:9.1919,dur:"2 h",pr:"≈ 20–30 €",tr:T_MI,d:"La cathédrale de marbre et la promenade sur les toits entre les flèches.",tip:"Billet horodaté en ligne conseillé."},
+{id:"galleria",z:"mi",t:"village",n:"Galleria Vittorio Emanuele II",lat:45.4658,lng:9.1900,dur:"30 min",pr:"Gratuit",tr:T_MI,d:"Le « salon » de Milan sous verrière, entre Duomo et Scala."},
+{id:"scala",z:"mi",t:"culture",n:"Teatro alla Scala & musée",lat:45.4674,lng:9.1895,dur:"1 h",pr:"≈ 12 €",tr:T_MI,d:"Le musée donne accès aux loges quand il n'y a pas de répétition."},
+{id:"cenacolo",z:"mi",t:"culture",n:"La Cène de Léonard (Cenacolo)",lat:45.4660,lng:9.1710,closed:[1],dur:"45 min",pr:"≈ 15 €",tr:T_MI,d:"La fresque de Santa Maria delle Grazie, 15 minutes devant le chef-d'œuvre.",tip:"Réservation obligatoire, souvent complète des semaines avant. Gratuit le dim. 4 (créneaux très rares)."},
+{id:"sforzesco",z:"mi",t:"culture",n:"Castello Sforzesco & Parco Sempione",lat:45.4705,lng:9.1794,dur:"2 h",pr:"Cours gratuites (musées ≈ 5 €)",tr:T_MI,d:"La forteresse des Sforza, la Pietà Rondanini de Michel-Ange, puis le parc jusqu'à l'Arco della Pace."},
+{id:"brera",z:"mi",t:"culture",n:"Pinacoteca di Brera & quartier",lat:45.4720,lng:9.1879,closed:[1],dur:"2 h",pr:"≈ 15 €",tr:T_MI,d:"Mantegna, Raphaël, Caravage… dans le quartier des galeries et des ruelles pavées."},
+{id:"prada",z:"mi",t:"culture",n:"Fondazione Prada",lat:45.4441,lng:9.2051,closed:[2],dur:"2 h",pr:"≈ 15 €",tr:T_MI,d:"Art contemporain dans une distillerie repensée par Rem Koolhaas ; Bar Luce signé Wes Anderson."},
+{id:"santambrogio",z:"mi",t:"sacre",n:"Basilica di Sant'Ambrogio",lat:45.4625,lng:9.1757,dur:"45 min",pr:"Gratuit",tr:T_MI,d:"La basilique romane du saint patron de Milan, atrium et autel d'or."},
+{id:"portanuova",z:"mi",t:"village",n:"Porta Nuova : Bosco Verticale & Gae Aulenti",lat:45.4848,lng:9.1900,dur:"1 h",pr:"Gratuit",tr:T_MI,d:"Le Milan du XXIe siècle : tours végétalisées, place suspendue, parc BAM."},
+{id:"navigli",z:"mi",t:"soir",n:"Aperitivo sur les Navigli",lat:45.4522,lng:9.1772,dur:"Soirée",pr:"€€",tr:T_MI,d:"Les canaux au coucher du soleil : spritz et buffet le long du Naviglio Grande."},
+{id:"luini",z:"mi",t:"food",n:"Panzerotti Luini",lat:45.4662,lng:9.1917,closed:[0],dur:"Sur le pouce",pr:"€",tr:T_MI,d:"L'institution à deux pas du Duomo : panzerotti frits depuis 1888."},
+{id:"sarpi",z:"mi",t:"food",n:"Chinatown – Via Paolo Sarpi",lat:45.4812,lng:9.1752,dur:"1 h",pr:"€",tr:T_MI,d:"Rue piétonne de street food : raviolis grillés, baozi, bubble tea."},
+{id:"montenapo",z:"mi",t:"shop",n:"Quadrilatero della Moda",lat:45.4686,lng:9.1953,dur:"1 h 30",pr:"€€€",tr:T_MI,d:"Via Montenapoleone, Via della Spiga : vitrines des grandes maisons, pour le plaisir des yeux."},
+{id:"rinascente",z:"mi",t:"shop",n:"Corso Vittorio Emanuele II & La Rinascente",lat:45.4652,lng:9.1932,dur:"2 h",pr:"€€",tr:T_MI,d:"L'artère commerçante piétonne et le grand magasin avec terrasse face aux flèches du Duomo."},
+{id:"qcmi",z:"mi",t:"spa",n:"QC Termemilano",lat:45.4526,lng:9.2030,dur:"1/2 j",pr:"≈ 55–75 €",tr:T_MI,d:"Thermes dans les anciens remparts espagnols, avec un sauna installé dans un tramway.",tip:"Réserver l'entrée en ligne."},
+{id:"sansiro",z:"mi",t:"insolite",n:"Stade San Siro – musée & visite",lat:45.4781,lng:9.1240,dur:"1 h 30",pr:"≈ 30–35 €",tr:T_MI,d:"Vestiaires, tunnel et pelouse du stade de l'Inter et du Milan.",tip:"Pas de match à Milan pendant le séjour (Milan–Atalanta le 18)."},
+{id:"monumentale",z:"mi",t:"insolite",n:"Cimitero Monumentale",lat:45.4862,lng:9.1790,closed:[1],dur:"1 h",pr:"Gratuit",tr:T_MI,d:"Musée de sculpture à ciel ouvert, étonnant et paisible."},
+{id:"alfa",z:"mi",t:"insolite",n:"Museo Storico Alfa Romeo (Arese)",lat:45.5562,lng:9.0537,closed:[2],dur:"2 h",pr:"≈ 12 €",tr:"≈ 1 h 05 🚗",d:"Un siècle d'Alfa Romeo, sur la route de Milan."},
+{id:"trattmilanese",z:"mi",t:"resto",q:"Trattoria Milanese via Santa Marta Milano",n:"Trattoria Milanese (Milan)",lat:45.4625,lng:9.1845,dur:"Repas",pr:"€€€",tr:T_MI,d:"Institution depuis 1933, à dix minutes du Duomo : risotto au safran, cotoletta, ossobuco.",tip:"Réserver."},
+{id:"isola",z:"mi",t:"soir",n:"Soirée à Isola & Corso Como (Milan)",lat:45.4870,lng:9.1880,dur:"Soirée",pr:"€€",tr:T_MI,d:"Bars à cocktails et terrasses au pied du Bosco Verticale.",tip:"Dernier train pour Biella tôt en soirée : prévoir la voiture."},
+
+/* ---------- LACS & ALENTOURS ---------- */
+{id:"orta",z:"ex",t:"village",n:"Orta San Giulio & île San Giulio",lat:45.7985,lng:8.4063,dur:"Journée",pr:"Bateau ≈ 5 €",tr:"≈ 1 h 10 🚗",d:"Le lac le plus romantique du Piémont : bourg piéton, bateau pour l'île, Sacro Monte (UNESCO) juste au-dessus."},
+{id:"villacrespi",z:"ex",t:"resto",q:"Villa Crespi Orta San Giulio",n:"Villa Crespi (Orta) – table 3 étoiles",lat:45.7930,lng:8.4110,dur:"Repas",pr:"€€€€",tr:"≈ 1 h 10 🚗",d:"Le palais mauresque d'Antonino Cannavacciuolo au bord du lac d'Orta : la grande occasion du séjour.",tip:"Réservation des semaines à l'avance."},
+{id:"stresa",z:"ex",t:"nature",n:"Stresa & îles Borromées (lac Majeur)",lat:45.8845,lng:8.5335,dur:"Journée",pr:"≈ 25–35 €",tr:"≈ 1 h 20 🚗",d:"Isola Bella, son palais baroque et ses jardins en terrasses ; Isola dei Pescatori pour déjeuner.",tip:"Palais ouverts jusqu'à début novembre."},
+{id:"arona",z:"ex",t:"insolite",n:"Arona & colosse de San Carlone",lat:45.7702,lng:8.5478,dur:"1 h 30",pr:"≈ 6–10 €",tr:"≈ 1 h 05 🚗",d:"Statue de 35 m (1698) dans laquelle on grimpe, puis promenade au bord du lac Majeur."},
+{id:"varallo",z:"ex",t:"sacre",n:"Sacro Monte di Varallo",lat:45.8203,lng:8.2540,dur:"1/2 j",pr:"Gratuit",tr:"≈ 1 h 🚗",d:"Le plus ancien des Sacri Monti (UNESCO) : 45 chapelles, 800 statues grandeur nature, téléphérique depuis la ville."},
+{id:"ivrea",z:"ex",t:"culture",n:"Ivrea, cité industrielle Olivetti",lat:45.4672,lng:7.8755,dur:"1/2 j",pr:"Gratuit",tr:"≈ 40 min 🚗",d:"Ville UNESCO du XXe siècle : architectures Olivetti, vieux centre, bords de la Dora."},
+{id:"bard",z:"ex",t:"culture",n:"Forte di Bard (Vallée d'Aoste)",lat:45.6088,lng:7.7447,closed:[1],dur:"1/2 j",pr:"≈ 10–20 €",tr:"≈ 50 min 🚗",d:"Forteresse spectaculaire verrouillant la vallée : musée des Alpes, expos, ascenseurs panoramiques, bourg médiéval."},
+{id:"aosta",z:"ex",t:"culture",n:"Aoste romaine",lat:45.7372,lng:7.3205,dur:"Journée",pr:"≈ 10 €",tr:"≈ 1 h 15 🚗",d:"Arc d'Auguste, théâtre romain, cryptoportique et cloître de Sant'Orso, au pied des 4 000."},
+{id:"sacra",z:"ex",t:"sacre",n:"Sacra di San Michele",lat:45.0977,lng:7.3433,dur:"1/2 j",pr:"≈ 8 €",tr:"≈ 1 h 40 🚗 (au-delà de Turin)",d:"Abbaye perchée à l'entrée du Val de Suse, qui a inspiré « Le Nom de la rose »."},
+{id:"vercelli",z:"ex",t:"village",n:"Vercelli : Sant'Andrea & rizières",lat:45.3275,lng:8.4235,dur:"1/2 j",pr:"Gratuit",tr:"≈ 40 min 🚗 · 🚆",d:"Basilique gothique-romane, vieux centre et la panissa, le risotto local aux haricots."},
+{id:"lucedio",z:"ex",t:"food",n:"Principato di Lucedio (rizières)",lat:45.2335,lng:8.2325,dur:"1 h 30",pr:"€",tr:"≈ 50 min 🚗",d:"Abbaye cistercienne où est née la riziculture italienne : domaine, boutique de riz, visites.",tip:"Visites à dates fixes : vérifier."},
+{id:"novara",z:"ex",t:"culture",n:"Novara & coupole de San Gaudenzio",lat:45.4492,lng:8.6182,dur:"1/2 j",pr:"Gratuit (montée €)",tr:"≈ 50 min 🚗",d:"La coupole de 121 m d'Antonelli, le centre à arcades, les biscotti di Novara."},
+{id:"vicolungo",z:"ex",t:"shop",n:"Vicolungo The Style Outlets",lat:45.4765,lng:8.4640,dur:"2–3 h",pr:"€€",tr:"≈ 40 min 🚗",d:"150 boutiques de marques à prix réduits, sur l'A4 entre Biella et Milan."}
+];
+
+const DAYS=[
+  {d:2,dow:"Vendredi",theme:"Arrivée en soirée · premier aperitivo",fix:[3,"Arrivée en fin de journée"]},
+  {d:3,dow:"Samedi",theme:"Candelo médiéval & couleurs d'automne"},
+  {d:4,dow:"Dimanche",theme:"Oropa, la montagne sacrée"},
+  {d:5,dow:"Lundi",theme:"Lac d'Orta (beaucoup de musées ferment le lundi)"},
+  {d:6,dow:"Mardi",theme:"Biella : ville haute, bière & cachemire"},
+  {d:7,dow:"Mercredi",theme:"Turin royale & gourmande"},
+  {d:8,dow:"Jeudi",theme:"Marché & nebbiolo du Haut-Piémont"},
+  {d:9,dow:"Vendredi",theme:"Milan en un jour"},
+  {d:10,dow:"Samedi",theme:"Foliage à l'Oasi Zegna & balade nocturne"},
+  {d:11,dow:"Dimanche",theme:"Dernier matin au lac · départ",fix:[1,"Départ dans la journée"]}
+];
+const SLOTS=["Matin","Midi","Après-midi","Soir"];
+const WD=["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
+/* programme suggéré : [id, index du jour, index du moment] */
+const SUGG=[
+  ["viaitalia",0,3],["menabrea",0,3],
+  ["candelo",1,0],["fumetti",1,0],["torchio",1,1],["burcina",1,2],["pailet",1,3],
+  ["oropa",2,0],["oropavisite",2,0],["polenta",2,1],["mucrone",2,2],
+  ["orta",3,0],["vicolungo",3,2],
+  ["piazzo",4,0],["lacivetta",4,1],["mebo",4,2],["theplace",4,2],
+  ["egizio",5,0],["portapalazzo",5,1],["piazze",5,2],["quadrilatero",5,3],
+  ["mercatobiella",6,0],["gattinara",6,2],
+  ["duomo",7,0],["luini",7,1],["brera",7,2],["navigli",7,3],
+  ["zegna",8,0],["sorriso",8,2],["turnonotte",8,3],
+  ["viverone",9,0]
+];
+/* journées types : à poser sur n'importe quel jour depuis le planning */
+const PACKS=[
+  ["Lac Majeur : Stresa & îles Borromées",[["stresa",0],["arona",2]]],
+  ["Turin II : Venaria, Mole & coucher de soleil",[["venaria",0],["mole",2],["cappuccini",3]]],
+  ["Turin détente : thermes, shopping & San Salvario",[["qcto",0],["viaroma",2],["sansalvario",3]]],
+  ["Vallée d'Aoste : Bard & Aoste",[["bard",0],["aosta",2]]],
+  ["Alba : foire de la truffe (10–11)",[["alba",0]]],
+  ["Grande rando : Monte Mucrone",[["montemucrone",0],["polenta",3]]],
+  ["Rando moyenne : Lago del Mucrone à pied",[["lagomucrone",0],["deiro",2]]],
+  ["Valle Cervo : Lago della Vecchia & Rosazza",[["vecchia",0],["rosazza",2]]],
+  ["Or & lac : Bessa, Masino, Viverone",[["bessa",0],["masino",2],["viverone",3]]],
+  ["Rizières : Vercelli & Lucedio",[["vercelli",0],["lucedio",2]]],
+  ["Sacro Monte de Varallo & vins de Gattinara",[["varallo",0],["gattinara",2]]],
+  ["Ivrea & Forte di Bard",[["ivrea",0],["bard",2]]],
+  ["Milan mode & design : Prada, Quadrilatero, Isola",[["prada",0],["montenapo",2],["isola",3]]]
+];
+const SPINE=[
+  ["3–4","Candelo","Fumetti al Ricetto"],["4","Oropa · 11 h","Visite guidée du trésor"],["4","Andrate","Festa della Polenta"],
+  ["9–10","Valdilana · 19 h 50","Turno di notte"],["10 →","Oasi Zegna","Balades foliage"],["10–11","Alba","Foire de la truffe blanche"],["11","Turin","Gran Balon"]
+];
+
+/* ================= ÉTAT ================= */
+const KEY="biella-2026-v1";
+/* choix déjà enregistrés, chargés au premier lancement (null = aucun) */
+const SEED={"f":"a","n":{"a":"Thibault","b":"Solange"},"nt":{"a":1790936962,"b":1790936962},"v":{"a":{"hobbisti":[1,1790937694],"lagomucrone":[2,1790937749],"battistero":[1,1790937782],"cittadellarte":[1,1790937788],"mebo":[1,1790937889],"mercatobiella":[1,1790937904],"theplace":[1,1790937956],"vicolungo":[1,1790938140],"balon":[2,1790938160],"valentino":[1,1790938182],"cappuccini":[1,1790938189],"mole":[1,1790938205],"egizio":[1,1790938206],"portapalazzo":[1,1790938252]},"b":{"fumetti":[-1,1790937884],"pailet":[1,1790938103],"beeropu":[1,1790938106],"oropavisite":[1,1790938181],"boscoautunno":[-1,1790938237],"andrate":[-1,1790938245],"hobbisti":[1,1790938250],"balon":[1,1790938264],"trippa":[-1,1790938299],"chiostro":[-1,1790938307],"montiglio":[-1,1790938316],"turnonotte":[-1,1790938328],"gemelli":[-1,1790938334],"lunapark":[-1,1790938339],"torinodanza":[-1,1790938345],"pausini":[-1,1790938350],"alba":[-1,1790938355],"mucrone":[2,1790938762],"burcina":[2,1790938777],"zegna":[1,1790938860],"sorriso":[1,1790938892],"viverone":[2,1790938898],"zumaglia":[1,1790938904],"valentino":[-1,1790938913],"cappuccini":[1,1790938923],"stresa":[1,1790938978],"preti":[-1,1790938992],"montemucrone":[1,1790939046],"lagomucrone":[-1,1790939121],"vecchia":[1,1790939126],"camino":[1,1790939143],"battistero":[1,1790939207],"cittadellarte":[-1,1790939221],"museoterr":[-1,1790939227],"casazegna":[1,1790939279],"masino":[-1,1790939314],"egizio":[-1,1790939322],"mole":[1,1790939363],"reale":[-1,1790939371],"venaria":[-1,1790939380],"stupinigi":[-1,1790939385],"lavazza":[-1,1790939398],"duomo":[1,1790939422],"scala":[-1,1790939439],"cenacolo":[-1,1790939444],"sforzesco":[-1,1790939456],"brera":[-1,1790939470],"prada":[-1,1790939477],"ivrea":[-1,1790939510],"bard":[1,1790939518],"aosta":[-1,1790939526],"novara":[-1,1790939532],"oropa":[1,1790939627],"graglia":[-1,1790939628],"sangiovanni":[-1,1790939657],"bose":[-1,1790939662],"superga":[1,1790939674],"varallo":[1,1790939709],"santambrogio":[-1,1790939761],"sacra":[-1,1790939765],"piazzo":[1,1790939781],"candelo":[1,1790939787],"rosazza":[1,1790939816],"piazze":[1,1790939831],"galleria":[-1,1790939885],"portanuova":[-1,1790939890],"orta":[1,1790939924],"vercelli":[-1,1790939953],"menabrea":[1,1790939982],"polenta":[-1,1790939986],"lacivetta":[1,1790940000],"torchio":[-1,1790940012],"tregalline":[-1,1790940017],"portosavona":[1,1790940025],"trattmilanese":[-1,1790940031],"villacrespi":[-1,1790940034],"mebo":[1,1790940053],"viaitalia":[1,1790940062],"ratafia":[-1,1790940065],"gattinara":[-1,1790940071],"mercatobiella":[2,1790940080],"mosca":[-1,1790940105],"deiro":[-1,1790940106],"centovigne":[-1,1790940110],"portapalazzo":[1,1790940116],"bicerin":[-1,1790940124],"gobino":[-1,1790940130],"eataly":[-1,1790940145],"mulassano":[-1,1790940171],"martini":[-1,1790940177],"luini":[-1,1790940180],"sarpi":[-1,1790940184],"lucedio":[-1,1790940191],"piazzosoir":[1,1790940211],"quadrilatero":[-1,1790940218],"sansalvario":[-1,1790940222],"navigli":[-1,1790940227],"isola":[-1,1790940233],"theplace":[1,1790940239],"piacenza":[-1,1790940248],"cerruti":[-1,1790940256],"viaroma":[-1,1790940263],"montenapo":[-1,1790940269],"rinascente":[-1,1790940276],"vicolungo":[-1,1790940278],"qcto":[-1,1790940285],"qcmi":[-1,1790940291],"fila":[-1,1790940302],"bessa":[-1,1790940379],"mauto":[-1,1790940381],"juve":[-1,1790940385],"sansiro":[-1,1790940389],"monumentale":[-1,1790940393],"alfa":[-1,1790940395],"arona":[1,1790940406]}},"p":{},"c":{}};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const now=()=>Math.floor(Date.now()/1000);
+const other=u=>u==="a"?"b":"a";
+function fresh(){ return {dev:Math.random().toString(36).slice(2,10), own:null, me:"a", names:{a:"",b:""}, nt:{a:0,b:0}, votes:{a:{},b:{}}, plan:{}, custom:{}, dirty:false}; }
+let S=fresh();
+let storageOK=true;
+let view="all", zoneF="all", viewDay="all"; const typeF=new Set();
+
+let ITEMS={};
+function rebuildItems(){ ITEMS={}; POIS.forEach(p=>ITEMS[p.id]=p);
+  Object.keys(S.custom).forEach(id=>{ const c=S.custom[id]; if(!c[2]) ITEMS[id]={id,z:"bi",t:"perso",n:c[0],custom:true,d:"Idée ajoutée par vous.",dur:"—",pr:"—",tr:"—"}; }); }
+const allItems=()=>Object.values(ITEMS);
+const nm=u=>S.names[u]||(u==="a"?"Personne 1":"Personne 2");
+const vote=(u,id)=>{ const e=S.votes[u][id]; return e?e[0]:0; };
+const VE={2:"❤️",1:"👍","-1":"👎",0:"·"};
+function status(id){ const a=vote("a",id), b=vote("b",id);
+  if(a>0&&b>0) return a+b===4?"love":"match";
+  if((a>0&&b<0)||(a<0&&b>0)) return "clash";
+  if(a<0&&b<0) return "no"; return ""; }
+function planOf(id){ const e=S.plan[id]; return e&&e[0]>=0&&ITEMS[id]?{d:e[0],s:e[1]}:null; }
+function warnFor(p,di){ const day=DAYS[di]; if(!day) return "";
+  if(p.dates&&!p.dates.includes(day.d)) return "pas ce jour-là";
+  const wd=new Date(2026,9,day.d).getDay();
+  if(p.closed&&p.closed.includes(wd)) return "souvent fermé le "+WD[wd];
+  return ""; }
+
+/* ---------- persistance ---------- */
+const saveEl=$("#saveStatus");
+function setSave(t,err){ saveEl.textContent=t; saveEl.classList.toggle("err",!!err); }
+function save(local){
+  if(!local){ S.dirty=true; schedulePush(); }
+  try{ localStorage.setItem(KEY,JSON.stringify(S)); storageOK=true;
+    setSave("Enregistré sur cet appareil ✓ "+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})); }
+  catch(e){ storageOK=false; setSave("Sauvegarde indisponible dans cet aperçu : ouvre le fichier dans le navigateur du téléphone pour conserver tes choix.",true); }
+  $("#tbDirty").hidden=!S.dirty;
+}
+function load(){
+  let raw=null; try{ raw=localStorage.getItem(KEY); }catch(e){ storageOK=false; setSave("Sauvegarde indisponible dans cet aperçu : ouvre le fichier dans le navigateur du téléphone pour conserver tes choix.",true); }
+  if(raw){ try{ const o=JSON.parse(raw); if(o&&o.votes&&o.votes.a&&o.votes.b&&o.plan) S=Object.assign(fresh(),o); if(S.me!=="a"&&S.me!=="b") S.me=S.own||"a"; }catch(e){} }
+}
+
+/* ---------- actions ---------- */
+function setVote(id,v){ const cur=vote(S.me,id); S.votes[S.me][id]=[cur===v?0:v,now()]; save(); refreshCard(id); refreshMarker(id); counters(); renderPlanning(); }
+function setPlan(id,d,s){ S.plan[id]=[d,s,now()]; save(); afterPlan(id); }
+function unplan(id){ S.plan[id]=[-1,0,now()]; save(); afterPlan(id); }
+function afterPlan(id){ refreshCard(id); refreshMarker(id); counters(); renderPlanning(); applyPlanMap(); }
+window.V=(id,v)=>{ setVote(id,v); const m=mkS[id]; if(m&&m.isPopupOpen()) popS(ITEMS[id],m); };
+window.U=id=>{ unplan(id); if(mapP) mapP.closePopup(); };
+
+/* ================= EN-TÊTE ================= */
+function renderWho(){
+  $("#whoseg").innerHTML=["a","b"].map(u=>'<button data-u="'+u+'" aria-pressed="'+(S.me===u)+'">'+esc(nm(u))+'</button>').join("");
+}
+$("#whoseg").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; S.me=b.dataset.u; save(true); renderWho(); renderViewSeg(); renderCatalog(); };
+$("#spine").innerHTML=SPINE.map(s=>'<div class="leg"><div class="d">'+s[0]+'</div><div class="t"><div class="k">'+s[1]+'</div><div class="v">'+s[2]+'</div></div></div>').join("");
+$("#legend").innerHTML=Object.values(ZONES).map(z=>'<span class="k"><i style="background:'+z.c+'"></i>'+z.l+'</span>').join("")+
+  '<span class="k"><i style="background:#fff;box-shadow:0 0 0 3px #F2C879"></i>Match</span><span class="k"><i style="background:#fff;box-shadow:0 0 0 3px #E0364F"></i>Coup de cœur ×2</span>';
+
+/* ================= FILTRES ================= */
+const VIEWS=[["all","Tout"],["todo","À voter"],["match","Nos matchs"],["clash","À départager"]];
+function viewCount(k){ const it=allItems();
+  if(k==="todo") return it.filter(p=>!vote(S.me,p.id)).length;
+  if(k==="match") return it.filter(p=>["love","match"].includes(status(p.id))).length;
+  if(k==="clash") return it.filter(p=>status(p.id)==="clash").length;
+  return it.length; }
+function renderViewSeg(){ $("#viewseg").innerHTML=VIEWS.map(v=>'<button data-v="'+v[0]+'" aria-pressed="'+(view===v[0])+'">'+v[1]+' <span class="n">'+viewCount(v[0])+'</span></button>').join(""); }
+$("#viewseg").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; view=b.dataset.v; filtersChanged(); };
+$("#zoneseg").innerHTML='<button data-z="all" aria-pressed="true">Partout</button>'+Object.entries(ZONES).map(([k,z])=>'<button data-z="'+k+'" aria-pressed="false">'+z.l+'</button>').join("");
+$("#zoneseg").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; zoneF=b.dataset.z; filtersChanged(); };
+$("#typechips").innerHTML=Object.entries(TYPES).map(([k,t])=>'<button class="chip" data-t="'+k+'" aria-pressed="false"><span class="dot" style="background:'+t.c+'"></span>'+t.l+'</button>').join("");
+$("#typechips").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; const k=b.dataset.t; typeF.has(k)?typeF.delete(k):typeF.add(k); filtersChanged(); };
+$("#btnResetF").onclick=()=>{ view="all"; zoneF="all"; typeF.clear(); filtersChanged(); };
+function pass(p){
+  if(zoneF!=="all"&&p.z!==zoneF) return false;
+  if(typeF.size&&!typeF.has(p.t)) return false;
+  const st=status(p.id);
+  if(view==="todo"&&vote(S.me,p.id)) return false;
+  if(view==="match"&&st!=="love"&&st!=="match") return false;
+  if(view==="clash"&&st!=="clash") return false;
+  return true; }
+function filtersChanged(){
+  document.querySelectorAll("#zoneseg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.z===zoneF));
+  document.querySelectorAll("#typechips button").forEach(b=>b.setAttribute("aria-pressed",typeF.has(b.dataset.t)));
+  renderViewSeg(); renderCatalog();
+  const pts=applySearchMap(); if(mapS&&pts.length) mapS.flyToBounds(pts,{padding:[40,40],maxZoom:14,duration:.5});
+}
+
+/* ================= CATALOGUE ================= */
+function dayOpts(p,sel){ return '<option value="">📅 Jour…</option>'+DAYS.map((d,i)=>(!p.dates||p.dates.includes(d.d))?'<option value="'+i+'" '+(sel===i?"selected":"")+'>'+d.dow.slice(0,3)+'. '+d.d+' oct.</option>':"").join(""); }
+function slotOpts(sel){ return SLOTS.map((s,i)=>'<option value="'+i+'" '+(sel===i?"selected":"")+'>'+s+'</option>').join(""); }
+function dateLabel(p){ return p.dates.length>2?p.dates.join(", ")+" oct.":p.dates.join(" & ")+" oct."; }
+function cardInner(p){
+  const st=status(p.id), pl=planOf(p.id), mv=vote(S.me,p.id), o=other(S.me), ov=vote(o,p.id);
+  const badge=st==="love"?'<span class="badge love">❤️ Coup de cœur ×2</span>':st==="match"?'<span class="badge match">★ Match</span>':st==="clash"?'<span class="badge clash">À départager</span>':"";
+  return '<div class="top"><div><div class="name">'+esc(p.n)+'</div><div class="zone"><span class="dot" style="background:'+ZONES[p.z].c+'"></span>'+ZONES[p.z].l+'</div></div>'+
+    (p.dates?'<span class="badge date">'+dateLabel(p)+'</span>':badge)+'</div>'+
+    (p.dates&&badge?'<div>'+badge+'</div>':"")+
+    '<div class="desc">'+esc(p.d)+'</div>'+
+    (p.custom?"":'<div class="meta">'+(p.lvl?'<span>🥾 '+p.lvl+'</span>':"")+'<span>⏱ '+p.dur+'</span><span>'+p.pr+'</span><span>'+p.tr+'</span></div>')+
+    (p.tip?'<div class="tip">'+esc(p.tip)+'</div>':"")+
+    '<div class="vote">'+[2,1,-1].map(v=>'<button class="vb" data-v="'+v+'" aria-pressed="'+(mv===v)+'" aria-label="'+(v===2?"J\'adore":v===1?"Pourquoi pas":"Non")+'">'+VE[v]+'</button>').join("")+
+      '<span class="oth">'+esc(nm(o))+' : '+(ov?VE[ov]:"pas encore voté")+'</span></div>'+
+    '<div class="plan"><select class="pd">'+dayOpts(p,pl?pl.d:null)+'</select><select class="ps" '+(pl?"":"disabled")+'>'+slotOpts(pl?pl.s:2)+'</select>'+
+      (p.lat?'<a href="https://www.google.com/maps/'+(p.q?'search/?api=1&query='+encodeURIComponent(p.q):'dir/?api=1&destination='+p.lat+','+p.lng)+'" target="_blank" rel="noopener">Y aller ↗</a>':"")+'</div>'+
+    (p.custom?'<button class="rm" data-rm>Supprimer cette idée</button>':"");
+}
+function cardClass(p){ const st=status(p.id); return "card"+(st?" st-"+st:""); }
+function refreshCard(id){ const el=document.getElementById("card-"+id), p=ITEMS[id]; if(el&&p){ el.className=cardClass(p); el.innerHTML=cardInner(p); } renderViewSeg(); }
+function score(p){ return vote("a",p.id)+vote("b",p.id); }
+function renderCatalog(){
+  const list=allItems().filter(pass);
+  $("#cShown").textContent=list.length;
+  const host=$("#catalog"); let html="";
+  Object.keys(TYPES).forEach(tk=>{
+    let items=list.filter(p=>p.t===tk); if(!items.length) return;
+    if(view==="match") items=items.slice().sort((x,y)=>score(y)-score(x));
+    html+='<div class="cat"><h3><span class="dot" style="background:'+TYPES[tk].c+'"></span>'+TYPES[tk].l+'<span class="n">'+items.length+'</span></h3><div class="cards">'+
+      items.map(p=>'<div class="'+cardClass(p)+'" id="card-'+p.id+'" data-id="'+p.id+'">'+cardInner(p)+'</div>').join("")+'</div></div>';
+  });
+  host.innerHTML=html||'<p class="note" style="padding:10px 0">'+(view==="todo"?"Tout est voté dans cette sélection. Bravo !":view==="match"?"Pas encore de match : il faut que vous ayez voté tous les deux (pense à fusionner vos téléphones).":"Aucune idée pour ce filtre.")+'</p>';
+  counters();
+}
+$("#catalog").addEventListener("click",e=>{
+  const card=e.target.closest(".card"); if(!card) return; const id=card.dataset.id;
+  const vb=e.target.closest(".vb"); if(vb){ setVote(id,+vb.dataset.v); return; }
+  if(e.target.closest("[data-rm]")){ if(confirm("Supprimer cette idée ?")){ S.custom[id][1]=now(); S.custom[id][2]=1; if(planOf(id)) S.plan[id]=[-1,0,now()]; save(); rebuildItems(); renderCatalog(); renderPlanning(); } }
+});
+$("#catalog").addEventListener("change",e=>{
+  const card=e.target.closest(".card"); if(!card) return; const id=card.dataset.id;
+  const pd=card.querySelector(".pd"), ps=card.querySelector(".ps");
+  if(pd.value==="") unplan(id); else setPlan(id,+pd.value,+ps.value);
+});
+$("#btnIdea").onclick=()=>{ const inp=$("#ideaName"), v=inp.value.trim(); if(!v) return;
+  const id="c"+S.dev.slice(0,4)+Date.now().toString(36); S.custom[id]=[v.slice(0,60),now(),0]; S.votes[S.me][id]=[2,now()];
+  inp.value=""; save(); rebuildItems(); renderCatalog(); renderViewSeg(); toast("Idée ajoutée dans « Nos idées »"); };
+function counters(){
+  const it=allItems();
+  $("#cTotal").textContent=it.length;
+  $("#cVoted").textContent=it.filter(p=>vote(S.me,p.id)).length;
+  $("#cMatch").textContent=it.filter(p=>["love","match"].includes(status(p.id))).length;
+  const n=it.filter(p=>planOf(p.id)).length;
+  $("#cPlan").textContent=n; const tb=$("#tbPlan"); tb.textContent=n; tb.hidden=n===0;
+}
+
+/* ================= PLANNING ================= */
+(function(){ const ds=$("#daystrip"); const t=new Date();
+  const today=(t.getFullYear()===2026&&t.getMonth()===9)?t.getDate():-1;
+  ds.innerHTML='<button data-day="all" aria-pressed="true"><span class="dd">Tous</span>jours</button>'+
+    DAYS.map((d,i)=>'<button data-day="'+i+'" aria-pressed="false" class="'+(d.d===today?"today":"")+'"><span class="dd">'+d.d+'</span>'+d.dow.slice(0,3)+'</button>').join("");
+  ds.onclick=e=>{ const b=e.target.closest("button"); if(!b) return; setViewDay(b.dataset.day==="all"?"all":+b.dataset.day); };
+})();
+function pv(id){ const a=vote("a",id), b=vote("b",id); return (a?VE[a]:"")+(b?VE[b]:""); }
+function renderPlanning(){
+  const host=$("#days"); let html="";
+  DAYS.forEach((d,i)=>{
+    if(viewDay!=="all"&&viewDay!==i) return;
+    const picks=allItems().filter(p=>{ const pl=planOf(p.id); return pl&&pl.d===i; });
+    const evs=POIS.filter(p=>p.dates&&p.dates.includes(d.d)&&!planOf(p.id)&&!SUGG.some(s=>s[0]===p.id&&s[1]===i));
+    html+='<div class="day"><div class="day-h"><div class="dow">'+d.dow+' <small>'+d.d+' oct.</small></div><div class="cnt">'+(picks.length?picks.length+" activité"+(picks.length>1?"s":""):"libre")+'</div></div>'+
+      '<div class="theme">'+d.theme+'</div>'+
+      '<select class="packsel" data-pack="'+i+'" aria-label="Journée type"><option value="">↻ Remplacer par une journée type…</option><option value="sugg">Programme suggéré de ce jour</option>'+PACKS.map((k,j)=>'<option value="'+j+'">'+esc(k[0])+'</option>').join("")+'</select>'+
+      (evs.length?'<div class="evline">Ce jour-là '+evs.map(p=>'<button class="sugg ev" data-add="'+p.id+'" data-d="'+i+'" data-s="2">+ '+esc(p.n)+'</button>').join("")+'</div>':"");
+    SLOTS.forEach((sl,si)=>{
+      let body=picks.filter(p=>planOf(p.id).s===si).map(p=>{ const w=warnFor(p,i);
+        return '<span class="pick"><span class="pn"><span class="pdot" style="background:'+ZONES[p.z].c+'"></span><span>'+esc(p.n)+' <span class="pv">'+pv(p.id)+'</span></span></span>'+
+          (w?'<span class="warn">⚠ '+w+'</span>':"")+
+          '<span class="pc"><select data-slot="'+p.id+'" aria-label="Moment">'+slotOpts(si)+'</select><button class="x" data-un="'+p.id+'" aria-label="Retirer">×</button></span></span>'; }).join("");
+      if(d.fix&&d.fix[0]===si) body='<span class="anchor">'+d.fix[1]+'</span>'+body;
+      body+=SUGG.filter(s=>s[1]===i&&s[2]===si&&!planOf(s[0])).map(s=>'<button class="sugg'+(ITEMS[s[0]].dates?" ev":"")+'" data-add="'+s[0]+'" data-d="'+i+'" data-s="'+si+'">+ '+esc(ITEMS[s[0]].n)+'</button>').join("");
+      html+='<div class="slot"><div class="slot-h">'+sl+'</div><div class="slot-body">'+(body||'<span class="slot-empty">—</span>')+'</div></div>';
+    });
+    html+='</div>';
+  });
+  host.innerHTML=html;
+}
+$("#days").addEventListener("click",e=>{
+  const a=e.target.closest("[data-add]"); if(a){ setPlan(a.dataset.add,+a.dataset.d,+a.dataset.s); return; }
+  const u=e.target.closest("[data-un]"); if(u) unplan(u.dataset.un);
+});
+$("#days").addEventListener("change",e=>{ const s=e.target.closest("[data-slot]"); if(s){ const id=s.dataset.slot; setPlan(id,planOf(id).d,+s.value); return; }
+  const k=e.target.closest("[data-pack]"); if(k&&k.value!=="") applyPack(+k.dataset.pack,k.value); });
+function applyPack(i,key){
+  const items=key==="sugg"?SUGG.filter(s=>s[1]===i).map(s=>[s[0],s[2]]):PACKS[+key][1];
+  const cur=allItems().filter(p=>{ const pl=planOf(p.id); return pl&&pl.d===i; });
+  if(cur.length&&!confirm("Remplacer les "+cur.length+" activité(s) de "+DAYS[i].dow.toLowerCase()+" "+DAYS[i].d+" ?")){ renderPlanning(); return; }
+  const t=now(); cur.forEach(p=>S.plan[p.id]=[-1,0,t]); items.forEach(x=>{ if(ITEMS[x[0]]) S.plan[x[0]]=[i,x[1],t+1]; });
+  save(); renderCatalog(); renderPlanning(); refreshMarkers(); toast(key==="sugg"?"Programme suggéré remis pour ce jour.":"Journée type posée : "+PACKS[+key][0]);
+}
+function setViewDay(v){
+  viewDay=v;
+  document.querySelectorAll("#daystrip button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.day===String(v))));
+  $("#planmaptitle").textContent=v==="all"?"Carte du planning · tout":"Carte du planning · "+DAYS[v].dow.toLowerCase()+" "+DAYS[v].d+" oct.";
+  renderPlanning(); const pts=applyPlanMap();
+  if(mapP&&pts.length) mapP.flyToBounds(pts,{padding:[45,45],maxZoom:14,duration:.5});
+}
+$("#btnSugg").onclick=()=>{ let n=0; const t=now(); SUGG.forEach(s=>{ if(!planOf(s[0])){ S.plan[s[0]]=[s[1],s[2],t]; n++; } });
+  save(); renderCatalog(); renderPlanning(); refreshMarkers(); toast(n?n+" activités placées. Ajuste librement !":"Le programme suggéré est déjà en place."); };
+$("#btnEmpty").onclick=()=>{ if(!confirm("Retirer toutes les activités du planning ? (les votes sont conservés)")) return; const t=now();
+  Object.keys(S.plan).forEach(id=>{ if(S.plan[id][0]>=0) S.plan[id]=[-1,0,t]; }); save(); renderCatalog(); renderPlanning(); refreshMarkers(); };
+
+/* ================= CARTES ================= */
+const HAS=typeof L!=="undefined";
+let mapS=null, mapP=null; const mkS={}, mkP={};
+const msgS=$("#msg-s"), msgP=$("#msg-p");
+function setMsg(el,t,err){ if(!t){ el.hidden=true; return; } el.hidden=false; el.textContent=t; el.classList.toggle("err",!!err); }
+function mkHtml(p){ const st=status(p.id); return '<div class="mk'+(p.dates?" ev":"")+(st==="love"?" love":st==="match"?" match":st==="no"?" no":"")+(planOf(p.id)?" on":"")+'" style="background:'+ZONES[p.z].c+'"></div>'; }
+function mkIcon(p){ return L.divIcon({className:"",html:mkHtml(p),iconSize:[22,22],iconAnchor:[11,11]}); }
+function popS(p,m){ const mv=vote(S.me,p.id), o=other(S.me), ov=vote(o,p.id), pl=planOf(p.id);
+  m.bindPopup('<div class="pop-name">'+esc(p.n)+'</div><div class="pop-type">'+TYPES[p.t].l+' · '+ZONES[p.z].l+'</div>'+
+    '<div class="vote" style="border:0;padding-top:6px">'+[2,1,-1].map(v=>'<button class="vb" aria-pressed="'+(mv===v)+'" onclick="V(\''+p.id+'\','+v+')">'+VE[v]+'</button>').join("")+'</div>'+
+    '<div class="note">'+esc(nm(o))+' : '+(ov?VE[ov]:"pas encore voté")+(pl?'<br>Planifié '+DAYS[pl.d].dow.toLowerCase()+' '+DAYS[pl.d].d+' · '+SLOTS[pl.s].toLowerCase():"")+'</div>').openPopup(); }
+function popP(p,m){ const pl=planOf(p.id); if(!pl) return;
+  m.bindPopup('<div class="pop-name">'+esc(p.n)+'</div><div class="pop-type">'+DAYS[pl.d].dow+' '+DAYS[pl.d].d+' oct. · '+SLOTS[pl.s]+'</div><button class="pop-btn" onclick="U(\''+p.id+'\')">Retirer du planning</button>').openPopup(); }
+/* fonds de carte sans clé d'API ; le bouton en haut à droite de la carte permet d'en changer */
+const BASES=[
+  ["Plan","https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Tiles &copy; Esri"}],
+  ["Relief","https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Tiles &copy; Esri"}],
+  ["OpenStreetMap","https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}],
+  ["OpenTopoMap","https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",{maxZoom:17,subdomains:"abc",attribution:"&copy; OpenStreetMap, SRTM · OpenTopoMap"}]
+];
+const baseLayers=[], baseTried=new Set(); let baseIdx=0;
+try{ const b=+localStorage.getItem(KEY+"-base"); if(b>=0&&b<BASES.length) baseIdx=b; }catch(e){}
+function setBase(i,auto){ baseIdx=i;
+  baseLayers.forEach(o=>o.ls.forEach((l,j)=>{ if(j===i){ if(!o.m.hasLayer(l)) l.addTo(o.m); } else if(o.m.hasLayer(l)) o.m.removeLayer(l); }));
+  try{ localStorage.setItem(KEY+"-base",String(i)); }catch(e){}
+  if(auto) toast("Fond de carte indisponible : passage sur « "+BASES[i][0]+" »."); }
+function initMaps(){
+  if(!HAS){ document.querySelectorAll(".lmap,.locbtn,#legend").forEach(e=>e.hidden=true); const t="Carte indisponible hors connexion : la liste, les votes et le planning fonctionnent quand même."; setMsg(msgS,t,true); setMsg(msgP,t,true); return; }
+  const mk=id=>{ const m=L.map(id,{scrollWheelZoom:false}).setView([45.45,8.35],9); L.control.scale({imperial:false}).addTo(m);
+    const ls=BASES.map(b=>L.tileLayer(b[1],b[2])), ctl={}; ls.forEach((l,i)=>{ ctl[BASES[i][0]]=l;
+      let ok=0, ko=0; l.on("tileload",()=>ok++); l.on("tileerror",()=>{ if(++ko>=4&&!ok&&baseIdx===i&&!baseTried.has(i)){ baseTried.add(i); setBase((i+1)%BASES.length,true); } }); });
+    baseLayers.push({m,ls}); ls[baseIdx].addTo(m); L.control.layers(ctl,null,{position:"topright"}).addTo(m);
+    m.on("baselayerchange",e=>{ const i=ls.indexOf(e.layer); if(i>=0&&i!==baseIdx) setBase(i); });
+    L.marker([45.5630,8.0580],{icon:L.divIcon({className:"",html:'<div class="mk base">⌂</div>',iconSize:[24,24],iconAnchor:[12,12]}),zIndexOffset:-100}).bindPopup('<div class="pop-name">Biella</div><div class="pop-type">Camp de base</div>').addTo(m);
+    return m; };
+  mapS=mk("map-s"); mapP=mk("map-p");
+  POIS.forEach(p=>{
+    const a=L.marker([p.lat,p.lng],{icon:mkIcon(p)}); a.on("click",()=>popS(p,a)); mkS[p.id]=a;
+    const b=L.marker([p.lat,p.lng],{icon:mkIcon(p)}); b.on("click",()=>popP(p,b)); mkP[p.id]=b;
+  });
+}
+let locActive=false;
+function applySearchMap(){ if(!mapS) return []; const pts=[];
+  POIS.forEach(p=>{ const vis=pass(p), m=mkS[p.id]; if(vis){ if(!mapS.hasLayer(m)) m.addTo(mapS); pts.push([p.lat,p.lng]); } else if(mapS.hasLayer(m)) mapS.removeLayer(m); });
+  if(!locActive) setMsg(msgS,pts.length?null:"Aucun lieu sur la carte pour ce filtre."); return pts; }
+function applyPlanMap(){ if(!mapP) return []; const pts=[];
+  POIS.forEach(p=>{ const pl=planOf(p.id), vis=!!pl&&(viewDay==="all"||pl.d===viewDay), m=mkP[p.id]; if(vis){ if(!mapP.hasLayer(m)) m.addTo(mapP); pts.push([p.lat,p.lng]); } else if(mapP.hasLayer(m)) mapP.removeLayer(m); });
+  if(!locActive) setMsg(msgP,pts.length?null:(viewDay==="all"?"Planning vide : adopte le programme suggéré ou place tes matchs.":"Rien de prévu "+DAYS[viewDay].dow.toLowerCase()+" "+DAYS[viewDay].d+" pour l'instant.")); return pts; }
+function refreshMarker(id){ if(!HAS||!mkS[id]) return; const p=ITEMS[id]; mkS[id].setIcon(mkIcon(p)); mkP[id].setIcon(mkIcon(p)); }
+function refreshMarkers(){ if(!HAS) return; POIS.forEach(p=>refreshMarker(p.id)); applySearchMap(); applyPlanMap(); }
+
+/* ---------- géolocalisation ---------- */
+const me={S:{m:null,c:null},P:{m:null,c:null}}; let watchId=null, firstFix=true;
+function setLocBtns(on){ ["#loc-s","#loc-p"].forEach(id=>$(id).setAttribute("aria-pressed",String(on))); }
+function startLocate(){ if(!HAS) return; if(!("geolocation" in navigator)){ setMsg(msgS,"Géolocalisation indisponible.",true); setMsg(msgP,"Géolocalisation indisponible.",true); return; }
+  locActive=true; firstFix=true; setLocBtns(true); setMsg(msgS,"Recherche de ta position…"); setMsg(msgP,"Recherche de ta position…");
+  watchId=navigator.geolocation.watchPosition(onPos,onErr,{enableHighAccuracy:true,maximumAge:5000,timeout:15000}); }
+function stopLocate(){ locActive=false; setLocBtns(false); if(watchId!=null){ navigator.geolocation.clearWatch(watchId); watchId=null; } applySearchMap(); applyPlanMap(); }
+function updMe(tag,map,ll,r){ const o=me[tag], ic=L.divIcon({className:"",html:'<div class="me-dot"></div>',iconSize:[16,16],iconAnchor:[8,8]});
+  if(!o.m){ o.m=L.marker(ll,{icon:ic,zIndexOffset:1000}).addTo(map); o.c=L.circle(ll,{radius:r,color:"#2b7fff",weight:1,fillColor:"#2b7fff",fillOpacity:.1}).addTo(map); } else { o.m.setLatLng(ll); o.c.setLatLng(ll).setRadius(r); } }
+function onPos(pos){ const ll=[pos.coords.latitude,pos.coords.longitude], r=Math.max(pos.coords.accuracy/2,15); updMe("S",mapS,ll,r); updMe("P",mapP,ll,r); setMsg(msgS,null); setMsg(msgP,null);
+  if(firstFix){ firstFix=false; mapS.flyTo(ll,12,{duration:.6}); mapP.flyTo(ll,12,{duration:.6}); } }
+function onErr(e){ locActive=false; setLocBtns(false); const t=e.code===1?"Position refusée : autorise la localisation dans le navigateur du téléphone.":"Localisation impossible pour l'instant."; setMsg(msgS,t,true); setMsg(msgP,t,true); }
+$("#loc-s").onclick=$("#loc-p").onclick=()=>{ locActive?stopLocate():startLocate(); };
+
+/* ================= PARTAGE ================= */
+function b64(u8){ let s=""; for(let i=0;i<u8.length;i+=0x8000) s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000)); return btoa(s).replace(/\+/g,".").replace(/\//g,"!").replace(/=+$/,""); }
+function unb64(s){ s=s.replace(/\./g,"+").replace(/!/g,"/"); while(s.length%4) s+="="; const bin=atob(s), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return u; }
+function payload(){ return {f:S.own,dev:S.dev,n:S.names,nt:S.nt,v:S.votes,p:S.plan,c:S.custom}; }
+async function encodeState(){
+  const bytes=new TextEncoder().encode(JSON.stringify(payload()));
+  if(window.CompressionStream){ try{ const st=new Blob([bytes]).stream().pipeThrough(new CompressionStream("deflate-raw")); return "BIELLA2:"+b64(new Uint8Array(await new Response(st).arrayBuffer())); }catch(e){} }
+  return "BIELLA1:"+b64(bytes);
+}
+async function decodeState(text){
+  const m=/BIELLA([12]):([A-Za-z0-9.!]+)/.exec(text||""); if(!m) throw new Error("nocode");
+  let bytes=unb64(m[2]);
+  if(m[1]==="2"){ if(!window.DecompressionStream) throw new Error("old");
+    const st=new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate-raw")); bytes=new Uint8Array(await new Response(st).arrayBuffer()); }
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+function swapAB(o,keys){ keys.forEach(k=>{ if(o[k]){ const t=o[k].a; o[k].a=o[k].b; o[k].b=t; } }); }
+/* fusion : pour chaque vote / activité / prénom, la version la plus récente gagne */
+function mergeState(p){
+  const lim=now()+86400, okT=t=>Number.isFinite(t)&&t>0&&t<lim, st={votes:0,plan:0,ideas:0,names:0};
+  if(!p||typeof p!=="object"||!p.v||!p.p) throw new Error("bad");
+  if(S.own&&p.dev&&p.dev!==S.dev){        // les deux appareils rangent-ils les deux personnes dans le même ordre ?
+    const norm=x=>String(x||"").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    const mine=norm(S.names[S.own]), rSame=norm(p.n&&p.n[S.own]), rOther=norm(p.n&&p.n[other(S.own)]);
+    let flip=false;
+    const eq=(x,y)=>!!x&&!!y&&(x===y||(Math.min(x.length,y.length)>1&&(x.startsWith(y)||y.startsWith(x))));   // « Thib » = « Thibault »
+    if(eq(mine,rOther)&&!eq(mine,rSame)) flip=true;              // mon prénom est dans l'autre case : ordre inversé
+    else if(eq(mine,rSame)) flip=false;                       // même personne, même case (ex. reprise sur un autre appareil)
+    else if(p.f===S.own&&!(S.same&&S.same[p.dev])){               // prénoms insuffisants : on demande
+      flip=!confirm("Ces choix ont été enregistrés par « "+((p.n&&p.n[p.f])||"?")+" » sur un autre appareil.\n\nOK : c'est moi.\nAnnuler : c'est l'autre personne.");
+      if(!flip) (S.same=S.same||{})[p.dev]=1; }
+    if(flip){ if(S.dev>p.dev){ swapAB(S,["names","nt","votes"]); S.own=other(S.own); S.me=other(S.me); }
+      else { swapAB(p,["n","nt","v"]); p.f=other(p.f); } }
+  }
+  ["a","b"].forEach(u=>{
+    const t=p.nt&&+p.nt[u]; if(okT(t)&&t>S.nt[u]&&p.n&&typeof p.n[u]==="string"){ S.names[u]=p.n[u].slice(0,20); S.nt[u]=t; st.names++; }
+    const src=(p.v&&p.v[u])||{};
+    Object.keys(src).forEach(id=>{ const e=src[id]; if(!Array.isArray(e)||![2,1,0,-1].includes(e[0])||!okT(e[1])||!/^[a-z0-9]{1,24}$/.test(id)) return;
+      const cur=S.votes[u][id]; if(!cur||e[1]>cur[1]){ S.votes[u][id]=[e[0],e[1]]; st.votes++; } });
+  });
+  Object.keys(p.p).forEach(id=>{ const e=p.p[id]; if(!Array.isArray(e)||!okT(e[2])||!/^[a-z0-9]{1,24}$/.test(id)) return;
+    const d=e[0]|0, s=e[1]|0; if(d<-1||d>=DAYS.length||s<0||s>=SLOTS.length) return;
+    const cur=S.plan[id]; if(!cur||e[2]>cur[2]){ S.plan[id]=[d,s,e[2]]; st.plan++; } });
+  Object.keys(p.c||{}).forEach(id=>{ const e=p.c[id]; if(!Array.isArray(e)||typeof e[0]!=="string"||!okT(e[1])||!/^c[a-z0-9]{1,23}$/.test(id)) return;
+    const cur=S.custom[id]; if(!cur||e[1]>cur[1]){ S.custom[id]=[e[0].slice(0,60),e[1],e[2]?1:0]; st.ideas++; } });
+  return st;
+}
+function fullRender(){ rebuildItems(); renderWho(); renderViewSeg(); renderCatalog(); renderPlanning(); refreshMarkers(); }
+async function importText(text){
+  const p=await decodeState(text); const st=mergeState(p);
+  save(true); fullRender(); return {st,from:p.f==="b"?"b":"a"};
+}
+function errText(e){ return e.message==="nocode"?"Je ne trouve pas de code BIELLA dans ce texte : copie le message WhatsApp en entier.":e.message==="old"?"Ce navigateur est trop ancien pour lire ce code : mets-le à jour ou ouvre l'outil dans Chrome ou Safari.":"Code illisible : il a peut-être été coupé. Redemande un envoi."; }
+function shareStats(){ const c=u=>Object.values(S.votes[u]).filter(e=>e[0]).length;
+  $("#shareStats").innerHTML='<div class="stat"><b>'+c("a")+'</b><span>votes de '+esc(nm("a"))+'</span></div><div class="stat"><b>'+c("b")+'</b><span>votes de '+esc(nm("b"))+'</span></div><div class="stat"><b>'+allItems().filter(p=>planOf(p.id)).length+'</b><span>au planning</span></div>'; }
+async function buildMessage(){
+  const code=await encodeState(), n=Object.values(S.votes[S.own]).filter(e=>e[0]).length, pl=allItems().filter(p=>planOf(p.id)).length;
+  let msg="🏔️ Biella 2–11 oct. · les choix de "+nm(S.own)+" ("+n+" votes, "+pl+" activités au planning)\n\nCopie ce message en entier, puis dans l'outil : Partager → Coller → Fusionner.\n\n";
+  if(/^https?:/.test(location.protocol)) msg+=location.href.split("#")[0]+"#"+code+"\n\n";
+  return {code,msg:msg+code};
+}
+function shareMsg(t,err){ const el=$("#shareMsg"); el.hidden=!t; el.textContent=t||""; el.classList.toggle("err",!!err); }
+function markSent(){ S.dirty=false; save(true); }
+$("#btnWA").onclick=async()=>{ const {msg}=await buildMessage(); markSent(); window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank"); shareMsg("WhatsApp s'ouvre : choisis le destinataire et envoie."); };
+$("#btnNative").onclick=async()=>{ const {msg}=await buildMessage();
+  if(navigator.share){ try{ await navigator.share({text:msg}); markSent(); }catch(e){} } else shareMsg("Partage natif indisponible ici : utilise WhatsApp ou « Copier le code ».",true); };
+$("#btnCopy").onclick=async()=>{ const {msg}=await buildMessage();
+  try{ await navigator.clipboard.writeText(msg); markSent(); shareMsg("Code copié : colle-le dans n'importe quelle messagerie."); }
+  catch(e){ $("#inCode").value=msg; $("#inCode").select(); shareMsg("Copie automatique impossible : le code est affiché ci-dessus, copie-le à la main.",true); } };
+$("#btnPaste").onclick=async()=>{ try{ $("#inCode").value=await navigator.clipboard.readText(); }catch(e){ shareMsg("Collage automatique refusé : appuie longuement dans la zone puis « Coller ».",true); } };
+$("#btnMerge").onclick=async()=>{ const txt=$("#inCode").value;
+  if(parseSync(txt)){ try{ await enableSync(parseSync(txt).t,parseSync(txt).g); $("#inCode").value=""; shareStats(); shareMsg("Synchro activée : vos deux téléphones se mettent à jour tout seuls."); }catch(e){ shareMsg(syncErr(e),true); } return; }
+  try{ const r=await importText(txt); $("#inCode").value=""; shareStats();
+    shareMsg("Fusion réussie avec "+nm(r.from)+" : "+r.st.votes+" votes, "+r.st.plan+" changements de planning"+(r.st.ideas?", "+r.st.ideas+" idées perso":"")+". Renvoie ton code pour que l'autre soit à jour aussi."); }
+  catch(e){ shareMsg(errText(e),true); } };
+$("#btnReset").onclick=()=>{ if(!confirm("Effacer tous les votes et le planning sur CET appareil ?")) return; try{ localStorage.removeItem(KEY); localStorage.removeItem(SKEY); }catch(e){} SYNC=null; setSync(null); S=fresh(); closeAll(); fullRender(); counters(); openWho(true); };
+
+/* ================= SYNCHRO AUTOMATIQUE (gist GitHub) =================
+   Les deux téléphones lisent et écrivent le même fichier JSON dans un gist.
+   Le jeton n'est jamais dans ce fichier HTML : il reste dans le stockage du navigateur. */
+const SKEY=KEY+"-sync", GFILE="biella.json";
+let SYNC=null, syncBusy=false, pushT=null;
+try{ const r=JSON.parse(localStorage.getItem(SKEY)||"null"); if(r&&r.g&&r.t) SYNC=r; }catch(e){}
+function setSync(t,err){ const el=$("#syncStatus"); el.hidden=!t; el.textContent=t||""; el.classList.toggle("err",!!err); }
+async function gh(method,path,body){
+  const h={"Accept":"application/vnd.github+json","Authorization":"Bearer "+SYNC.t}; if(body) h["Content-Type"]="application/json";
+  const r=await fetch("https://api.github.com"+path,{method,cache:"no-store",headers:h,body:body?JSON.stringify(body):undefined});
+  if(!r.ok){ const e=new Error("http"); e.status=r.status; throw e; }
+  return r.json();
+}
+function syncErr(e){ const c=e&&e.status;
+  return c===401?"Jeton GitHub refusé : vérifie qu'il est copié en entier et encore valide."
+    :c===403?"GitHub refuse l'accès : le jeton n'a pas la permission « gist », ou la limite de requêtes est atteinte."
+    :c===404?"Gist introuvable avec ce jeton : vérifie l'identifiant et la permission « gist »."
+    :c?"Erreur GitHub ("+c+")."
+    :"Pas de réseau : la synchro reprendra dès que la connexion revient."; }
+function remoteLacks(p){
+  const rv=p.v||{}, rp=p.p||{}, rc=p.c||{}, rn=p.nt||{};
+  for(const u of ["a","b"]){ if(S.nt[u]>(+rn[u]||0)) return true; const lv=S.votes[u], r=rv[u]||{};
+    for(const id in lv){ if(!r[id]||r[id][1]<lv[id][1]) return true; } }
+  for(const id in S.plan){ if(!rp[id]||rp[id][2]<S.plan[id][2]) return true; }
+  for(const id in S.custom){ if(!rc[id]||rc[id][1]<S.custom[id][1]) return true; }
+  return false; }
+async function syncNow(){
+  if(!SYNC||syncBusy) return false; syncBusy=true;
+  try{
+    const g=await gh("GET","/gists/"+SYNC.g); let p=null; const f=g.files&&g.files[GFILE];
+    if(f){ let txt=f.content; if(f.truncated&&f.raw_url) txt=await (await fetch(f.raw_url,{cache:"no-store"})).text(); try{ p=JSON.parse(txt); }catch(e){} }
+    const valid=!!(p&&p.v&&p.p);
+    if(valid){ const before=S.own, st=mergeState(p); let n=st.votes+st.plan+st.ideas+st.names;
+      if(n||before!==S.own){ save(true); fullRender(); if(document.querySelector("#ovShare.open")) shareStats(); } }
+    if(S.own&&(!valid||remoteLacks(p))) await gh("PATCH","/gists/"+SYNC.g,{files:{[GFILE]:{content:JSON.stringify(payload())}}});
+    if(S.dirty){ S.dirty=false; save(true); }
+    setSync("· Synchro GitHub ✓ "+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit",second:"2-digit"})); return true;
+  }catch(e){ setSync("· "+syncErr(e),true); return false; }
+  finally{ syncBusy=false; }
+}
+function schedulePush(){ if(!SYNC) return; clearTimeout(pushT); pushT=setTimeout(syncNow,1500); }
+async function enableSync(tok,gid){
+  tok=String(tok||"").trim(); gid=String(gid||"").trim().replace(/[#?].*$/,"").replace(/\/+$/,"").replace(/^.*\//,"");
+  if(!tok){ const e=new Error("tok"); e.status=401; throw e; }
+  const prev=SYNC; SYNC={t:tok,g:gid};
+  try{
+    if(!gid){ const g=await gh("POST","/gists",{description:"Biella 2026 · synchro du planning",public:false,files:{[GFILE]:{content:JSON.stringify(S.own?payload():{})}}}); SYNC.g=g.id; }
+    else await gh("GET","/gists/"+gid);
+  }catch(e){ SYNC=prev; throw e; }
+  try{ localStorage.setItem(SKEY,JSON.stringify(SYNC)); }catch(e){}
+  await syncNow(); renderSync();
+}
+function syncCode(){ return "BIELLASYNC:"+b64(new TextEncoder().encode(JSON.stringify({g:SYNC.g,t:SYNC.t}))); }
+function parseSync(text){ const m=/BIELLASYNC:([A-Za-z0-9.!]+)/.exec(text||""); if(!m) return null;
+  try{ const o=JSON.parse(new TextDecoder().decode(unb64(m[1]))); return o&&typeof o.g==="string"&&typeof o.t==="string"?o:null; }catch(e){ return null; } }
+function inviteMsg(){ const c=syncCode(); let m="🔄 Biella 2–11 oct. · invitation à la synchro automatique\n\n";
+  if(/^https?:/.test(location.protocol)) m+="Ouvre ce lien :\n"+location.href.split("#")[0]+"#"+c+"\n\nOu copie ce message en entier et colle-le dans l'outil (Partager → Coller → Fusionner).\n\n";
+  else m+="Copie ce message en entier et colle-le dans l'outil (à l'accueil, ou Partager → Coller → Fusionner).\n\n";
+  return m+c; }
+function syMsg(t,err){ const el=$("#syMsg"); el.hidden=!t; el.textContent=t||""; el.classList.toggle("err",!!err); }
+function renderSync(){ $("#syncOff").hidden=!!SYNC; $("#syncOn").hidden=!SYNC;
+  if(SYNC) $("#syInfo").textContent="Synchro active sur le gist "+SYNC.g.slice(0,8)+"… : mise à jour toutes les 20 secondes et après chaque changement."; }
+$("#btnSyOn").onclick=async()=>{ syMsg("Connexion à GitHub…");
+  try{ await enableSync($("#syTok").value,$("#syGist").value); $("#syTok").value=""; syMsg("Synchro activée. Invite maintenant l'autre téléphone avec le bouton vert."); }catch(e){ syMsg(syncErr(e),true); } };
+$("#btnSyNow").onclick=async()=>{ const ok=await syncNow(); shareStats(); syMsg(ok?"À jour.":$("#syncStatus").textContent.replace(/^· /,""),!ok); };
+$("#btnSyWA").onclick=()=>{ window.open("https://wa.me/?text="+encodeURIComponent(inviteMsg()),"_blank"); syMsg("WhatsApp s'ouvre : envoie l'invitation à l'autre personne (elle contient le jeton, ne la partage pas ailleurs)."); };
+$("#btnSyCopy").onclick=async()=>{ const m=inviteMsg(); try{ await navigator.clipboard.writeText(m); syMsg("Invitation copiée."); }catch(e){ $("#inCode").value=m; $("#inCode").select(); syMsg("Copie automatique impossible : l'invitation est affichée plus bas, copie-la à la main.",true); } };
+$("#btnSyOff").onclick=()=>{ try{ localStorage.removeItem(SKEY); }catch(e){} SYNC=null; setSync(null); renderSync(); syMsg("Synchro désactivée sur cet appareil. Les données restent en place."); };
+setInterval(()=>{ if(SYNC&&document.visibilityState==="visible") syncNow(); },20000);
+document.addEventListener("visibilitychange",()=>{ if(SYNC&&document.visibilityState==="visible") syncNow(); });
+window.addEventListener("online",()=>{ if(SYNC) syncNow(); });
+
+/* ---------- feuilles ---------- */
+function openShare(){ shareStats(); shareMsg(null); renderSync(); $("#ovShare").classList.add("open"); }
+function closeAll(){ document.querySelectorAll(".overlay").forEach(o=>o.classList.remove("open")); }
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeAll);
+document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{ if(e.target===o&&S.own) closeAll(); }));
+$("#btnShareTop").onclick=openShare;
+function openWho(mode){ if(mode===true) mode="first"; if(mode===false) mode="edit";
+  const first=mode==="first", pick=mode==="pick";
+  $("#whoTitle").textContent=first?"Benvenuti !":pick?"Qui es-tu ?":"Vos prénoms";
+  $("#whoIntro").textContent=first?"Deux prénoms pour savoir qui vote quoi. Tout reste sur ce téléphone.":pick?"Des choix existants ont été chargés. Indique qui utilise ce téléphone.":"Modifie les prénoms ou la personne qui utilise ce téléphone.";
+  $("#whoClose").hidden=first||pick; $("#joinBox").hidden=!first; $("#nameBox").hidden=pick; $("#pickBox").hidden=first; $("#joinMsg").hidden=true;
+  const mine=S.own||"a"; $("#nmMe").value=S.names[mine]||""; $("#nmOther").value=S.names[other(mine)]||"";
+  $("#pickRow").innerHTML=["a","b"].map(u=>'<button class="btn '+(S.own===u?"wine":"alt")+'" data-u="'+u+'">'+esc(nm(u))+'</button>').join("");
+  $("#ovWho").classList.add("open");
+}
+$("#pickRow").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; const was=S.own; S.own=b.dataset.u; S.me=S.own; save(true); fullRender();
+  if(!was){ closeAll(); toast("Bienvenue "+nm(S.own)+" !"); if(SYNC) syncNow(); } else openWho("edit"); };
+$("#btnNames").onclick=()=>openWho(false);
+$("#btnWhoOk").onclick=()=>{ const first=!S.own; if(first){ S.own="a"; S.me="a"; } const mine=S.own, t=now();
+  const a=$("#nmMe").value.trim().slice(0,20), b=$("#nmOther").value.trim().slice(0,20);
+  if(a&&a!==S.names[mine]){ S.names[mine]=a; S.nt[mine]=t; } if(b&&b!==S.names[other(mine)]){ S.names[other(mine)]=b; S.nt[other(mine)]=t; }
+  save(first); closeAll(); fullRender(); if(SYNC) syncNow(); };
+$("#btnJoin").onclick=async()=>{ const el=$("#joinMsg"), txt=$("#joinCode").value;
+  if(parseSync(txt)){ try{ await enableSync(parseSync(txt).t,parseSync(txt).g);
+      if(S.own){ closeAll(); toast("Bienvenue "+nm(S.own)+" ! Synchro activée."); } else if(S.names.a||S.names.b){ $("#joinCode").value=""; openWho("pick"); } else { $("#joinCode").value=""; el.hidden=false; el.classList.remove("err"); el.textContent="Synchro activée. Rien n'est encore enregistré en ligne : entre vos prénoms pour commencer."; } }
+    catch(e){ el.hidden=false; el.classList.add("err"); el.textContent=syncErr(e); } return; }
+  el.classList.add("err");
+  try{ await importText(txt); $("#joinCode").value=""; if(S.own) closeAll(); else openWho("pick"); }
+  catch(e){ el.hidden=false; el.textContent=errText(e); } };
+let toastT; function toast(t){ const el=$("#toast"); el.textContent=t; el.style.display="block"; clearTimeout(toastT); toastT=setTimeout(()=>el.style.display="none",3200); }
+
+/* ---------- onglets mobile ---------- */
+function setTab(tab){ document.body.dataset.tab=tab;
+  document.querySelectorAll("#tabbar button[data-tab]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.tab===tab)));
+  setTimeout(()=>{ if(mapS) mapS.invalidateSize(); if(mapP){ mapP.invalidateSize(); applyPlanMap(); } },80); window.scrollTo({top:0}); }
+$("#tabbar").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; b.dataset.act==="share"?openShare():setTab(b.dataset.tab); };
+
+/* ================= DÉMARRAGE ================= */
+load();
+if(SEED){ try{ const st=mergeState(JSON.parse(JSON.stringify(SEED))); if(st.votes+st.plan+st.ideas+st.names) save(true); }catch(e){} }
+initMaps(); rebuildItems();
+document.querySelectorAll("#zoneseg button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.z===zoneF)));
+renderWho(); renderViewSeg(); renderCatalog(); renderPlanning(); applySearchMap(); applyPlanMap();
+$("#tbDirty").hidden=!S.dirty;
+if(!S.own) openWho(S.names.a||S.names.b?"pick":"first");
+(async()=>{ let h=""; try{ h=decodeURIComponent(location.hash.slice(1)); }catch(e){}
+  if(/^BIELLASYNC:/.test(h)){ try{ history.replaceState(null,"",location.pathname+location.search); }catch(e){}
+    if(S.own){ try{ await enableSync(parseSync(h).t,parseSync(h).g); toast("Synchro automatique activée."); }catch(e){ toast(syncErr(e)); } }
+    else { $("#joinCode").value=h; $("#btnJoin").click(); } }
+  else if(/^BIELLA[12]:/.test(h)){
+    if(S.own){ openShare(); $("#inCode").value=h; shareMsg("Un code a été détecté dans le lien : touche « Fusionner »."); } else $("#joinCode").value=h; }
+  else if(SYNC) syncNow(); })();
+let rz; window.addEventListener("resize",()=>{ clearTimeout(rz); rz=setTimeout(()=>{ if(mapS) mapS.invalidateSize(); if(mapP) mapP.invalidateSize(); },150); });
+setTimeout(()=>{ if(mapS) mapS.invalidateSize(); if(mapP) mapP.invalidateSize(); },220);
+</script>
+</body>
+</html>
