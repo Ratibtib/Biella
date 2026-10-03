@@ -110,6 +110,29 @@
   .lnk{border:1px solid var(--line); background:transparent; color:var(--ink-soft); border-radius:8px; padding:6px 11px; font-size:12px; font-weight:700; cursor:pointer}
   .lnk:hover{color:var(--wine); border-color:var(--wine)}
 
+  /* ---------- recherche ---------- */
+  .search{position:relative; margin:0 0 10px}
+  .search input{width:100%; border:1.5px solid var(--line); border-radius:12px; padding:11px 42px 11px 38px; font-size:16px; background:#fff; color:var(--ink); -webkit-appearance:none; appearance:none}
+  .search input::-webkit-search-cancel-button{display:none}
+  .search input:focus{outline:2px solid var(--ochre); outline-offset:1px}
+  .search .si{position:absolute; left:12px; top:13px; color:var(--ink-soft); pointer-events:none}
+  #qClear{position:absolute; right:7px; top:7px; width:30px; height:30px; border-radius:50%; border:0; background:var(--paper); color:var(--ink-soft); font-size:13px; cursor:pointer}
+  #qClear[hidden],#qRes[hidden]{display:none}
+  #qRes{display:flex; flex-direction:column; margin-top:6px; border:1px solid var(--line); border-radius:12px; background:#fff; overflow:hidden}
+  #qRes button{display:flex; align-items:baseline; gap:4px 8px; flex-wrap:wrap; text-align:left; border:0; border-bottom:1px solid var(--line); background:#fff; color:var(--ink); padding:10px 12px; font-size:13.5px; cursor:pointer}
+  #qRes button:last-child{border-bottom:0}
+  #qRes button .dot{width:8px; height:8px; border-radius:50%; flex:none; align-self:center}
+  #qRes button small{color:var(--ink-soft); font-weight:600; font-size:11px}
+  #qRes button.all{justify-content:center; font-weight:800; color:var(--wine); background:#FBF6EC}
+  #qRes .note{padding:10px 12px; margin:0}
+  .filters.dim .scroller{opacity:.4}
+  .card.flash{animation:flash 2.2s ease-out}
+  @keyframes flash{0%,55%{box-shadow:0 0 0 4px rgba(200,134,42,.8)}100%{box-shadow:0 0 0 0 rgba(200,134,42,0)}}
+  .tomap{border:0; background:none; padding:0 0 0 2px; font:inherit; color:var(--lake); cursor:pointer; font-weight:800}
+  .pname{border:0; background:none; padding:0; font:inherit; color:inherit; text-align:left; cursor:pointer; text-decoration:underline dotted; text-underline-offset:3px}
+  .pop-name{cursor:pointer}
+  .pop-btn.alt{background:#fff; color:var(--ink); border:1px solid var(--line); margin-right:6px}
+
   /* ---------- catalogue ---------- */
   .cat{margin:14px 0 20px}
   .cat > h3{font-family:var(--disp); font-weight:700; font-size:17px; margin:0 0 9px; padding-bottom:5px; border-bottom:2px solid var(--ink); display:flex; align-items:center; gap:9px}
@@ -256,6 +279,12 @@
       <div class="col-head"><h2>Idées</h2><span class="cc"><b id="cVoted">0</b>/<span id="cTotal">0</span> votées · <b id="cMatch">0</b> matchs</span></div>
       <div class="panel-body">
         <div class="mapwrap">
+          <div class="search">
+            <svg class="si" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5 L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            <input type="search" id="q" placeholder="Rechercher : ville, activité, « gratuit »…" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Rechercher une idée">
+            <button id="qClear" aria-label="Effacer la recherche" hidden>✕</button>
+            <div id="qRes" hidden></div>
+          </div>
           <div class="mmbar"><span class="mmtitle">Les idées sur la carte</span><button class="locbtn" id="loc-s"><span class="pin">◉</span> Ma position</button></div>
           <div id="map-s" class="lmap"></div>
           <div class="mapmsg" id="msg-s" hidden></div>
@@ -420,7 +449,7 @@ const POIS=[
 
 /* ---------- BIELLESE ---------- */
 {id:"oropa",z:"bi",t:"sacre",n:"Santuario di Oropa",lat:45.6284,lng:7.9797,dur:"2–3 h",pr:"Gratuit (musée ≈ 5 €)",tr:"25 min 🚗 · bus",d:"Le plus grand sanctuaire marial des Alpes, à 1 200 m : cours monumentales, Vierge noire, Sacro Monte classé UNESCO."},
-{id:"mucrone",z:"bi",t:"nature",lvl:"Facile",n:"Funivie d'Oropa & Lago del Mucrone",lat:45.6308,lng:7.9722,dur:"1/2 j",pr:"≈ 15–20 € A/R",tr:"25 min 🚗",d:"Téléphérique depuis le sanctuaire puis balade facile jusqu'au lac d'altitude, vers 1 900 m.",tip:"Ouverture variable hors saison : vérifier avant de monter."},
+{id:"mucrone",z:"bi",t:"nature",n:"Lago del Mucrone (téléphérique fermé)",lat:45.6308,lng:7.9722,dur:"≈ 5 h A/R à pied",pr:"Gratuit",tr:"25 min 🚗",d:"Le lac d'altitude au-dessus d'Oropa, à 1 894 m. Le téléphérique est hors service, sans date de réouverture : on n'y monte plus qu'à pied.",tip:"Voir la fiche « Lago del Mucrone à pied depuis Oropa » dans les randonnées (675 m de dénivelé)."},
 {id:"piazzo",z:"bi",t:"village",n:"Biella Piazzo & funiculaire",lat:45.5667,lng:8.0463,dur:"1 h 30",pr:"Gratuit",tr:"Sur place",d:"La ville haute médiévale : arcades de Piazza Cisterna, palais Gromo Losa et La Marmora, vues sur les Alpes. Funiculaire gratuit."},
 {id:"battistero",z:"bi",t:"culture",n:"Baptistère & Duomo de Biella",lat:45.5659,lng:8.0537,dur:"30 min",pr:"Gratuit",tr:"Sur place",d:"Petit baptistère roman du XIe siècle, emblème de la ville, accolé à la cathédrale."},
 {id:"cittadellarte",z:"bi",t:"culture",n:"Cittadellarte – Fondazione Pistoletto",lat:45.5722,lng:8.0597,dur:"1 h 30",pr:"≈ 10 €",tr:"Sur place",d:"Ancienne filature au bord du Cervo devenue laboratoire d'art contemporain de Michelangelo Pistoletto (Arte Povera).",tip:"Visites surtout le week-end ou sur réservation."},
@@ -452,8 +481,8 @@ const POIS=[
 /* ---------- RANDONNÉES ---------- */
 {id:"preti",z:"bi",t:"rando",lvl:"Facile",n:"Passeggiata dei Preti (Oropa)",lat:45.6296,lng:7.9825,dur:"1 h",pr:"Gratuit",tr:"25 min 🚗",d:"Promenade presque plate en sous-bois depuis le sanctuaire, idéale après le déjeuner."},
 {id:"lagomucrone",z:"bi",t:"rando",lvl:"Moyen · 675 m D+",n:"Lago del Mucrone à pied depuis Oropa",lat:45.6302,lng:7.9735,dur:"≈ 5 h A/R",pr:"Gratuit",tr:"25 min 🚗",d:"8,5 km en forêt puis en balcon sur le sanctuaire et la plaine, jusqu'au lac glaciaire à 1 894 m. Retour possible par le Lago delle Bose.",tip:"Le sanctuaire organise aussi des sorties guidées (≈ 15 €)."},
-{id:"vecchia",z:"bi",t:"rando",lvl:"Moyen · ≈ 800 m D+",n:"Lago della Vecchia (depuis Piedicavallo)",lat:45.6905,lng:7.9545,dur:"≈ 5 h A/R",pr:"Gratuit",tr:"35 min 🚗",d:"Belle mulatière de pierre au fond de la Valle Cervo jusqu'à un lac d'altitude et son refuge. Se combine avec Rosazza.",tip:"Dénivelé et temps approximatifs : vérifier la trace avant de partir."},
-{id:"montemucrone",z:"bi",t:"rando",lvl:"Sportif · 1 150 m D+",n:"Monte Mucrone (2 335 m)",lat:45.6300,lng:7.9728,dur:"Journée",pr:"Gratuit",tr:"25 min 🚗",d:"Le sommet emblématique de Biella : 3 h de montée depuis Oropa par le lac, croix sommitale et vue du Mont Rose à la plaine.",tip:"Seulement 450 m D+ et 1 h 30 si le téléphérique fonctionne. Météo et neige précoce à vérifier."},
+{id:"vecchia",z:"bi",t:"rando",lvl:"Moyen · 835 m D+",n:"Lago della Vecchia (depuis Piedicavallo)",lat:45.6905,lng:7.9545,dur:"≈ 4 h 30 A/R",pr:"Gratuit",tr:"35 min 🚗",d:"Sentier E50 depuis Piedicavallo (1 037 m) : mulatière pavée en forêt, alpages, puis le lac à 1 878 m et son refuge, à la source du Cervo. 2 h 30 de montée. Se combine avec Rosazza.",tip:"Ouverture du refuge en octobre à vérifier : prévoir le pique-nique."},
+{id:"montemucrone",z:"bi",t:"rando",lvl:"Sportif · 1 150 m D+",n:"Monte Mucrone (2 335 m)",lat:45.6300,lng:7.9728,dur:"Journée",pr:"Gratuit",tr:"25 min 🚗",d:"Le sommet emblématique de Biella : 3 h de montée depuis Oropa par le lac, croix sommitale et vue du Mont Rose à la plaine.",tip:"Téléphérique hors service : tout se fait à pied depuis Oropa. Météo et neige précoce à vérifier."},
 {id:"camino",z:"bi",t:"rando",lvl:"Sportif · ≈ 1 200 m D+",n:"Monte Camino (2 388 m)",lat:45.6304,lng:7.9740,dur:"Journée",pr:"Gratuit",tr:"25 min 🚗",d:"Le plus beau panorama des Alpes biellaises, avec un refuge au sommet, au-dessus d'Oropa.",tip:"Chiffres approximatifs ; itinéraire long, à réserver à une journée de beau temps."},
 
 /* ---------- RESTOS, MARCHÉS, DÉGUSTATIONS, SOIRÉES (Biellese) ---------- */
@@ -547,7 +576,7 @@ const WD=["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
 const SUGG=[
   ["viaitalia",0,3],["menabrea",0,3],
   ["candelo",1,0],["fumetti",1,0],["torchio",1,1],["burcina",1,2],["pailet",1,3],
-  ["oropa",2,0],["oropavisite",2,0],["polenta",2,1],["mucrone",2,2],
+  ["oropa",2,0],["oropavisite",2,0],["polenta",2,1],["preti",2,2],
   ["orta",3,0],["vicolungo",3,2],
   ["piazzo",4,0],["lacivetta",4,1],["mebo",4,2],["theplace",4,2],
   ["egizio",5,0],["portapalazzo",5,1],["piazze",5,2],["quadrilatero",5,3],
@@ -588,7 +617,8 @@ const other=u=>u==="a"?"b":"a";
 function fresh(){ return {dev:Math.random().toString(36).slice(2,10), own:null, me:"a", names:{a:"",b:""}, nt:{a:0,b:0}, votes:{a:{},b:{}}, plan:{}, custom:{}, dirty:false}; }
 let S=fresh();
 let storageOK=true;
-let view="all", zoneF="all", viewDay="all"; const typeF=new Set();
+let view="all", zoneF="all", viewDay="all", query=""; const typeF=new Set();
+const fold=x=>String(x||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 
 let ITEMS={};
 function rebuildItems(){ ITEMS={}; POIS.forEach(p=>ITEMS[p.id]=p);
@@ -654,7 +684,13 @@ $("#zoneseg").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; zo
 $("#typechips").innerHTML=Object.entries(TYPES).map(([k,t])=>'<button class="chip" data-t="'+k+'" aria-pressed="false"><span class="dot" style="background:'+t.c+'"></span>'+t.l+'</button>').join("");
 $("#typechips").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; const k=b.dataset.t; typeF.has(k)?typeF.delete(k):typeF.add(k); filtersChanged(); };
 $("#btnResetF").onclick=()=>{ view="all"; zoneF="all"; typeF.clear(); filtersChanged(); };
+const ZKW={bi:"biella biellese",to:"turin torino",mi:"milan milano",ex:"lacs alentours excursion"};
+function hay(p){ return p._h||(p._h=" "+fold([p.n,p.d,p.tip,p.lvl,p.pr,ZONES[p.z].l,ZKW[p.z],TYPES[p.t].l,p.dates?"evenement "+p.dates.map(d=>d+" oct").join(" "):""].join(" ")).replace(/[^a-z0-9]+/g," ")); }
+/* chaque mot tapé doit être le début d'un mot de la fiche : « orta » trouve Orta, pas Porta Palazzo */
+function matches(p){ const h=hay(p); return query.split(" ").every(t=>h.includes(" "+t)); }
+function rank(p){ const n=" "+fold(p.n).replace(/[^a-z0-9]+/g," "); return n.includes(" "+query)?0:query.split(" ").every(t=>n.includes(" "+t))?1:2; }
 function pass(p){
+  if(query) return matches(p);          // la recherche porte sur toutes les idées, sans tenir compte des filtres
   if(zoneF!=="all"&&p.z!==zoneF) return false;
   if(typeF.size&&!typeF.has(p.t)) return false;
   const st=status(p.id);
@@ -662,7 +698,44 @@ function pass(p){
   if(view==="match"&&st!=="love"&&st!=="match") return false;
   if(view==="clash"&&st!=="clash") return false;
   return true; }
+function renderQ(){
+  const box=$("#qRes"); $("#qClear").hidden=!$("#q").value; document.querySelector(".filters").classList.toggle("dim",!!query);
+  if(!query){ box.hidden=true; box.innerHTML=""; return; }
+  const res=allItems().filter(matches).sort((x,y)=>rank(x)-rank(y));
+  box.hidden=false;
+  box.innerHTML=res.length
+    ? res.slice(0,8).map(p=>'<button data-go="'+p.id+'"><span class="dot" style="background:'+ZONES[p.z].c+'"></span><b>'+esc(p.n)+'</b><small>'+ZONES[p.z].l+' · '+TYPES[p.t].l+'</small></button>').join("")+
+      '<button class="all" data-all>'+(res.length>8?"Voir les "+res.length+" résultats dans la liste ↓":"Voir dans la liste ↓")+'</button>'
+    : '<p class="note">Aucun résultat pour « '+esc($("#q").value.trim())+' ». Essaie un nom de ville, un thème ou « gratuit ».</p>';
+}
+let qT;
+function setQuery(raw,now_){ query=fold(raw).replace(/[^a-z0-9]+/g," ").trim(); renderQ(); clearTimeout(qT);
+  const run=()=>{ renderViewSeg(); renderCatalog(); const pts=applySearchMap(); if(mapS&&pts.length) mapS.flyToBounds(pts,{padding:[40,40],maxZoom:14,duration:.4}); };
+  if(now_) run(); else qT=setTimeout(run,220); }
+$("#q").addEventListener("input",e=>setQuery(e.target.value));
+$("#q").addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); e.target.blur(); if(query) $("#catalog").scrollIntoView({behavior:"smooth",block:"start"}); } });
+$("#qClear").onclick=()=>{ $("#q").value=""; setQuery("",true); $("#q").focus(); };
+$("#qRes").onclick=e=>{ const g=e.target.closest("[data-go]"); if(g){ $("#q").blur(); goCard(g.dataset.go); return; }
+  if(e.target.closest("[data-all]")){ $("#q").blur(); $("#catalog").scrollIntoView({behavior:"smooth",block:"start"}); } };
+function syncFilterUI(){
+  document.querySelectorAll("#zoneseg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.z===zoneF));
+  document.querySelectorAll("#typechips button").forEach(b=>b.setAttribute("aria-pressed",typeF.has(b.dataset.t)));
+  renderViewSeg(); }
+/* aller à la fiche d'une idée dans la liste (depuis la carte, la recherche ou le planning) */
+function goCard(id){
+  if(!ITEMS[id]) return;
+  if(!document.getElementById("card-"+id)){ view="all"; zoneF="all"; typeF.clear(); query=""; $("#q").value=""; clearTimeout(qT); renderQ(); syncFilterUI(); renderCatalog(); applySearchMap(); }
+  const go=()=>{ const el=document.getElementById("card-"+id); if(!el) return; el.scrollIntoView({behavior:"smooth",block:"center"});
+    el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); setTimeout(()=>el.classList.remove("flash"),2300); };
+  if(document.body.dataset.tab!=="ideas"&&window.matchMedia("(max-width:1040px)").matches){ setTab("ideas"); setTimeout(go,200); } else go();
+}
+window.G=goCard;
+/* montrer une idée sur la carte depuis sa fiche */
+function showOnMap(id){ const p=ITEMS[id], m=mkS[id]; if(!mapS||!m||!p) return; if(!mapS.hasLayer(m)) m.addTo(mapS);
+  document.getElementById("map-s").scrollIntoView({behavior:"smooth",block:"center"});
+  mapS.setView([p.lat,p.lng],Math.max(mapS.getZoom()||0,13)); popS(p,m); }
 function filtersChanged(){
+  if(query){ query=""; $("#q").value=""; clearTimeout(qT); renderQ(); }
   document.querySelectorAll("#zoneseg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.z===zoneF));
   document.querySelectorAll("#typechips button").forEach(b=>b.setAttribute("aria-pressed",typeF.has(b.dataset.t)));
   renderViewSeg(); renderCatalog();
@@ -676,7 +749,7 @@ function dateLabel(p){ return p.dates.length>2?p.dates.join(", ")+" oct.":p.date
 function cardInner(p){
   const st=status(p.id), pl=planOf(p.id), mv=vote(S.me,p.id), o=other(S.me), ov=vote(o,p.id);
   const badge=st==="love"?'<span class="badge love">❤️ Coup de cœur ×2</span>':st==="match"?'<span class="badge match">★ Match</span>':st==="clash"?'<span class="badge clash">À départager</span>':"";
-  return '<div class="top"><div><div class="name">'+esc(p.n)+'</div><div class="zone"><span class="dot" style="background:'+ZONES[p.z].c+'"></span>'+ZONES[p.z].l+'</div></div>'+
+  return '<div class="top"><div><div class="name">'+esc(p.n)+'</div><div class="zone"><span class="dot" style="background:'+ZONES[p.z].c+'"></span>'+ZONES[p.z].l+(HAS&&p.lat?' · <button class="tomap" data-loc>📍 CARTE</button>':"")+'</div></div>'+
     (p.dates?'<span class="badge date">'+dateLabel(p)+'</span>':badge)+'</div>'+
     (p.dates&&badge?'<div>'+badge+'</div>':"")+
     '<div class="desc">'+esc(p.d)+'</div>'+
@@ -707,6 +780,7 @@ function renderCatalog(){
 $("#catalog").addEventListener("click",e=>{
   const card=e.target.closest(".card"); if(!card) return; const id=card.dataset.id;
   const vb=e.target.closest(".vb"); if(vb){ setVote(id,+vb.dataset.v); return; }
+  if(e.target.closest("[data-loc]")){ showOnMap(id); return; }
   if(e.target.closest("[data-rm]")){ if(confirm("Supprimer cette idée ?")){ S.custom[id][1]=now(); S.custom[id][2]=1; if(planOf(id)) S.plan[id]=[-1,0,now()]; save(); rebuildItems(); renderCatalog(); renderPlanning(); } }
 });
 $("#catalog").addEventListener("change",e=>{
@@ -746,7 +820,7 @@ function renderPlanning(){
       (evs.length?'<div class="evline">Ce jour-là '+evs.map(p=>'<button class="sugg ev" data-add="'+p.id+'" data-d="'+i+'" data-s="2">+ '+esc(p.n)+'</button>').join("")+'</div>':"");
     SLOTS.forEach((sl,si)=>{
       let body=picks.filter(p=>planOf(p.id).s===si).map(p=>{ const w=warnFor(p,i);
-        return '<span class="pick"><span class="pn"><span class="pdot" style="background:'+ZONES[p.z].c+'"></span><span>'+esc(p.n)+' <span class="pv">'+pv(p.id)+'</span></span></span>'+
+        return '<span class="pick"><span class="pn"><span class="pdot" style="background:'+ZONES[p.z].c+'"></span><span><button class="pname" data-go="'+p.id+'">'+esc(p.n)+'</button> <span class="pv">'+pv(p.id)+'</span></span></span>'+
           (w?'<span class="warn">⚠ '+w+'</span>':"")+
           '<span class="pc"><select data-slot="'+p.id+'" aria-label="Moment">'+slotOpts(si)+'</select><button class="x" data-un="'+p.id+'" aria-label="Retirer">×</button></span></span>'; }).join("");
       if(d.fix&&d.fix[0]===si) body='<span class="anchor">'+d.fix[1]+'</span>'+body;
@@ -759,6 +833,7 @@ function renderPlanning(){
 }
 $("#days").addEventListener("click",e=>{
   const a=e.target.closest("[data-add]"); if(a){ setPlan(a.dataset.add,+a.dataset.d,+a.dataset.s); return; }
+  const g=e.target.closest("[data-go]"); if(g){ goCard(g.dataset.go); return; }
   const u=e.target.closest("[data-un]"); if(u) unplan(u.dataset.un);
 });
 $("#days").addEventListener("change",e=>{ const s=e.target.closest("[data-slot]"); if(s){ const id=s.dataset.slot; setPlan(id,planOf(id).d,+s.value); return; }
@@ -790,11 +865,12 @@ function setMsg(el,t,err){ if(!t){ el.hidden=true; return; } el.hidden=false; el
 function mkHtml(p){ const st=status(p.id); return '<div class="mk'+(p.dates?" ev":"")+(st==="love"?" love":st==="match"?" match":st==="no"?" no":"")+(planOf(p.id)?" on":"")+'" style="background:'+ZONES[p.z].c+'"></div>'; }
 function mkIcon(p){ return L.divIcon({className:"",html:mkHtml(p),iconSize:[22,22],iconAnchor:[11,11]}); }
 function popS(p,m){ const mv=vote(S.me,p.id), o=other(S.me), ov=vote(o,p.id), pl=planOf(p.id);
-  m.bindPopup('<div class="pop-name">'+esc(p.n)+'</div><div class="pop-type">'+TYPES[p.t].l+' · '+ZONES[p.z].l+'</div>'+
+  m.bindPopup('<div class="pop-name" onclick="G(\''+p.id+'\')">'+esc(p.n)+'</div><div class="pop-type">'+TYPES[p.t].l+' · '+ZONES[p.z].l+'</div>'+
     '<div class="vote" style="border:0;padding-top:6px">'+[2,1,-1].map(v=>'<button class="vb" aria-pressed="'+(mv===v)+'" onclick="V(\''+p.id+'\','+v+')">'+VE[v]+'</button>').join("")+'</div>'+
-    '<div class="note">'+esc(nm(o))+' : '+(ov?VE[ov]:"pas encore voté")+(pl?'<br>Planifié '+DAYS[pl.d].dow.toLowerCase()+' '+DAYS[pl.d].d+' · '+SLOTS[pl.s].toLowerCase():"")+'</div>').openPopup(); }
+    '<div class="note">'+esc(nm(o))+' : '+(ov?VE[ov]:"pas encore voté")+(pl?'<br>Planifié '+DAYS[pl.d].dow.toLowerCase()+' '+DAYS[pl.d].d+' · '+SLOTS[pl.s].toLowerCase():"")+'</div>'+
+    '<button class="pop-btn" onclick="G(\''+p.id+'\')">Voir le descriptif ↓</button>').openPopup(); }
 function popP(p,m){ const pl=planOf(p.id); if(!pl) return;
-  m.bindPopup('<div class="pop-name">'+esc(p.n)+'</div><div class="pop-type">'+DAYS[pl.d].dow+' '+DAYS[pl.d].d+' oct. · '+SLOTS[pl.s]+'</div><button class="pop-btn" onclick="U(\''+p.id+'\')">Retirer du planning</button>').openPopup(); }
+  m.bindPopup('<div class="pop-name" onclick="G(\''+p.id+'\')">'+esc(p.n)+'</div><div class="pop-type">'+DAYS[pl.d].dow+' '+DAYS[pl.d].d+' oct. · '+SLOTS[pl.s]+'</div><button class="pop-btn alt" onclick="G(\''+p.id+'\')">Voir le descriptif</button><button class="pop-btn" onclick="U(\''+p.id+'\')">Retirer du planning</button>').openPopup(); }
 /* fonds de carte sans clé d'API ; le bouton en haut à droite de la carte permet d'en changer */
 const BASES=[
   ["Plan","https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Tiles &copy; Esri"}],
